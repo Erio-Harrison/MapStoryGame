@@ -1,19 +1,17 @@
-import Room;
+package skeletonCode;
 
 public class Game {
-    private Room startingRoom;
 
     public Game() {
         // Default constructor
     }
 
     public Game(Room startingRoom) {
-        this.startingRoom = startingRoom;
     }
 
     public void init(String config) {
         // Initialize the game based on the provided configuration
-        System.out.println("Game initialized with config: " + config);
+        System.out.println("assignment3.Game initialized with config: " + config);
     }
 
     public static void main(String[] args) {

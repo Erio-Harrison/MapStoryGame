@@ -1,3 +1,5 @@
+package skeletonCode;
+
 public class Creature {
     private int HP;
 

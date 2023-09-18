@@ -1,3 +1,5 @@
+package skeletonCode;
+
 import java.util.ArrayList;
 import java.util.List;
 public class Room {
@@ -31,6 +33,9 @@ public class Room {
         Room room = new Room();
         room.moveToRoomLeft();
         room.inspect();
+    }
+
+    public void addNPC(NPC alice) {
     }
 }
 

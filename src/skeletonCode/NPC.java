@@ -1,5 +1,7 @@
+package skeletonCode;
+
 public class NPC {
-    private String name;
+    private static String name;
 
     public NPC(String name) {
         this.name = name;
