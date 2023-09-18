@@ -30,9 +30,16 @@ public class Creature {
     public void setHP(int HP) {
         this.HP = HP;
     }
+    public void setCurrentRoom(Room room) {
+    }
 
     public static void main(String[] args) {
         Creature creature = new Creature(100);
+
+        // Create a Room object and set it as the current room for the creature
+        Room room = new Room("Living Room");
+        creature.setCurrentRoom(room);
+
         creature.lookAround();
         creature.move();
         creature.attack();

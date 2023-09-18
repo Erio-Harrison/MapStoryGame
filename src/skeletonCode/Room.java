@@ -23,6 +23,16 @@ public class Room {
         System.out.println("You move to the room below.");
     }
 
+    private String location;
+
+    public Room(String location) {
+        this.location = location;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
     public void inspect() {
         System.out.println("You inspect the room.");
         System.out.println("NPCs in the room:");
