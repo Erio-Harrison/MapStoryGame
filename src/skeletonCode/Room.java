@@ -3,10 +3,9 @@ package skeletonCode;
 import java.util.ArrayList;
 import java.util.List;
 public class Room {
-    private List<NPC> npcs;
 
     public Room() {
-        npcs = new ArrayList<>();
+        List<NPC> npcs = new ArrayList<>();
     }
     public void moveToRoomLeft() {
         System.out.println("You move to the room on the left.");

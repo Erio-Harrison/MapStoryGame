@@ -4,7 +4,7 @@ public class NPC {
     private static String name;
 
     public NPC(String name) {
-        this.name = name;
+        NPC.name = name;
     }
 
     public void talk(String message) {
