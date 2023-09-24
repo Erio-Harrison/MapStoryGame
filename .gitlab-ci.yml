@@ -16,6 +16,8 @@ build:
   stage: build
   script:
     - gradle assemble
+  tags:
+    - comp2120
   artifacts:
     paths:
       - build/libs/
@@ -24,3 +26,5 @@ test:
   stage: test
   script:
     - gradle test
+  tags:
+    - comp2120
