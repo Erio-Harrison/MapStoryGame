@@ -31,4 +31,9 @@ sourceSets {
             srcDirs = ['src']
         }
     }
+    test {
+        java {
+            srcDirs = ['src/Test']
+        }
+    }
 }
