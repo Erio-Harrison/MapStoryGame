@@ -1,0 +1,30 @@
+image: gradle:jdk11
+
+stages:
+  - build
+  - test
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - .gradle/
+
+build:
+  stage: build
+  script:
+    - gradle assemble
+  tags:
+    - comp2120
+  artifacts:
+    paths:
+      - build/libs/
+
+test:
+  stage: test
+  script:
+    - gradle test
+  tags:
+    - comp2120
