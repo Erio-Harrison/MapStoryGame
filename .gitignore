@@ -4,3 +4,6 @@
 *.class
 
 doc/
+
+build/
+.gradle/*

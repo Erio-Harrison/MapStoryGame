@@ -25,6 +25,6 @@ build:
 test:
   stage: test
   script:
-    - gradle test
+    - gradle test --info
   tags:
     - comp2120
