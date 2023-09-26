@@ -3,7 +3,7 @@ package GameEngine;
 /**
  * Implements items in game
  */
-public abstract class Item {
+public class Item {
     /**
      * Item ID
      */
