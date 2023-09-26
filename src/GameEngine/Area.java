@@ -4,7 +4,7 @@ import java.util.*;
 /**
  * The Area class implements different areas
  */
-public abstract class Area {
+public class Area {
     /**
      * NPCs in area
      */
