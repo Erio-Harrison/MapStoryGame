@@ -1,4 +1,6 @@
 package GameEngine;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * The Action class provides the basic building blocks of game functionality.
@@ -23,20 +25,34 @@ public abstract class Action {
     public abstract void doAction();
 }
 
-// NOTE
-// These subclasses are just placeholders to flesh out
-// They all need more parameters in their constructor and other stuff
-
 /**
  * User choice
  */
 class Choice extends Action {
-    public Choice(Game game) {
+    Map<String, Action> choices;
+
+    public Choice(Game game, Map<String, Action> choices) {
         super(game);
+        this.choices = choices;
     }
 
     @Override
     public void doAction() {
+        // [1] tell him to get lost
+        // Enter choice, or b for backpack: b
+        int count = 0;
+
+        ArrayList<String> choice_strings = new ArrayList<>(this.choices.keySet());
+        for (String s : choice_strings) {
+            count++;
+            System.out.println("[" + count + "] " + s);
+        }
+        System.out.print("Select choice (enter a number between 1 and " + count + "): ");
+        String choice = this.game.scanner.nextLine();
+        int n_choice = Integer.parseInt(choice) - 1;
+
+        // do the corresponding choice
+        this.choices.get(choice_strings.get(n_choice)).doAction();
     }
 }
 
@@ -44,12 +60,33 @@ class Choice extends Action {
  * List of actions
  */
 class ActionList extends Action {
-    public ActionList(Game game) {
+    ArrayList<Action> action_list;
+
+    public ActionList(Game game, ArrayList<Action> action_list) {
+        super(game);
+        this.action_list = action_list;
+    }
+
+    @Override
+    public void doAction() {
+        for (Action a : this.action_list) {
+            a.doAction();
+        }
+    }
+}
+
+/**
+ * List of actions
+ */
+class Win extends Action {
+    public Win(Game game) {
         super(game);
     }
 
     @Override
     public void doAction() {
+        System.out.println("you win!");
+        System.exit(0);
     }
 }
 
@@ -57,12 +94,16 @@ class ActionList extends Action {
  * Print to screen
  */
 class Say extends Action {
-    public Say(Game game) {
+    String to_print;
+
+    public Say(Game game, String to_print) {
         super(game);
+        this.to_print = to_print;
     }
 
     @Override
     public void doAction() {
+        System.out.println(to_print);
     }
 }
 
@@ -135,12 +176,16 @@ class RemoveFromArea extends Action {
  * Change area player is in
  */
 class ChangeArea extends Action {
-    public ChangeArea(Game game) {
+    Area next_area;
+
+    public ChangeArea(Game game, Area next_area) {
         super(game);
+        this.next_area = next_area;
     }
 
     @Override
     public void doAction() {
+        this.game.currentArea = next_area;
     }
 }
 

@@ -7,3 +7,7 @@ doc/
 
 build/
 .gradle/*
+
+.idea/*
+
+bin/*
