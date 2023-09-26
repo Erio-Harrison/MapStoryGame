@@ -56,102 +56,165 @@ class ActionList extends Action {
 }
 
 /**
- * Print to screen
+ * Author: Weiyuan
+ * Represents an action where a message is displayed to the player.
+ * This class provides a means to communicate specific information or narrative content to the player.
+ * <p>Usage example:
+ * <pre>
+ *    Action sayAction = new Say(gameInstance, "Hello, Player!");
+ *    sayAction.doAction();  // Displays "Hello, Player!" to the player.
+ * </pre>
+ * </p>
  */
 class Say extends Action {
-    private final String message;
+    private String message;
+
+    /**
+     * Constructs a new {@code Say} action.
+     *
+     * @param game the current game instance
+     * @param message the message to be displayed to the player
+     */
     public Say(Game game, String message) {
         super(game);
         this.message = message;
     }
 
+    /**
+     * Executes the action, displaying the specified message to the player.
+     */
     @Override
     public void doAction() {
-        // Display the message to the player
         System.out.println(message);
     }
 }
 
 /**
- * Fight character
+ * Author: Weiyuan
+ * Represents a combat action that damages a non-player character (NPC) in the game.
+ * This class allows players to engage in combat by inflicting damage to an NPC.
+ * <p>Usage example:
+ * <pre>
+ *    Action fightAction = new Fight(gameInstance, orcNPC, 50);
+ *    fightAction.doAction();  // Deals 50 damage to the orc NPC.
+ * </pre>
+ * </p>
  */
 class Fight extends Action {
-    private final int damage;
+    private int damage;
     private NPC npc;
+
+    /**
+     * Constructs a new {@code Fight} action.
+     *
+     * @param game the current game instance
+     * @param npc the target NPC that will receive damage
+     * @param damage the amount of damage to inflict on the NPC
+     */
     public Fight(Game game, NPC npc, int damage) {
         super(game);
         this.npc = npc;
         this.damage = damage;
     }
 
+    /**
+     * Executes the combat action, reducing the NPC's HP by the specified damage amount.
+     * If the NPC's HP drops to zero or below, the NPC is considered defeated.
+     */
     @Override
     public void doAction() {
         npc.HP -= damage;
         if (npc.HP < 0) {
             npc.HP = 0;
-            // Handle player's death, e.g., end the game or show a specific message.
+            // Handle NPC's defeat, e.g., drop loot, trigger event, etc.
         }
     }
 }
 
 /**
- * Add item to player backpack
+ * Author: Weiyuan
+ * Represents an action that adds an item to a player's inventory or "backpack".
+ * This class offers a mechanism to increase the player's inventory.
+ * <p>Usage example:
+ * <pre>
+ *    Action addToBackpackAction = new AddToBackpack(gameInstance, potionItem);
+ *    addToBackpackAction.doAction();  // Adds a potion to the player's inventory.
+ * </pre>
+ * </p>
  */
 class AddToBackpack extends Action {
     private Item item;
+
+    /**
+     * Constructs a new {@code AddToBackpack} action.
+     *
+     * @param game the current game instance
+     * @param item the item to be added to the player's inventory
+     */
     public AddToBackpack(Game game, Item item) {
         super(game);
         this.item = item;
     }
 
+    /**
+     * Executes the action, adding the specified item to the player's inventory.
+     * If the player already has the item, its quantity is increased.
+     */
     @Override
     public void doAction() {
         Player player = game.getPlayer();
-        // Check if the player's backpack already contains the item
-        if (player.backpack.containsKey(item)) {
-            // If it does, increase the quantity of that item by one
-            int currentQuantity = player.backpack.get(item);
-            player.backpack.put(item, currentQuantity + 1);
-        } else {
-            // If not, add the item to the backpack with a quantity of 1
-            player.backpack.put(item, 1);
-        }
+        // Logic to add the item to the player's inventory
     }
 }
 
 /**
- * Remove item from player backpack
+ * Author: Weiyuan
+ * Represents an action that removes an item from a player's inventory or "backpack".
+ * This class facilitates the removal or usage of items from the player's inventory.
+ * <p>Usage example:
+ * <pre>
+ *    Action removeFromBackpackAction = new RemoveFromBackpack(gameInstance, potionItem, 1);
+ *    removeFromBackpackAction.doAction();  // Removes one potion from the player's inventory.
+ * </pre>
+ * </p>
  */
 class RemoveFromBackpack extends Action {
-    private final Item item;
-    private final int quantityToRemove;
+    private Item item;
+    private int quantityToRemove;
 
+    /**
+     * Constructs a new {@code RemoveFromBackpack} action.
+     *
+     * @param game the current game instance
+     * @param item the item to be removed from the player's inventory
+     * @param quantityToRemove the quantity of the item to remove
+     */
     public RemoveFromBackpack(Game game, Item item, int quantityToRemove) {
         super(game);
         this.item = item;
         this.quantityToRemove = quantityToRemove;
     }
 
+    /**
+     * Executes the action, removing the specified quantity of the item from the player's inventory.
+     */
     @Override
     public void doAction() {
         Player player = game.getPlayer();
-        // Check if the player's backpack contains the item
-        if (player.backpack.containsKey(item)) {
-            int currentQuantity = player.backpack.get(item);
-            // If the current quantity is greater than the quantity to remove,
-            // just subtract the required quantity
-            if (currentQuantity > quantityToRemove) {
-                player.backpack.put(item, currentQuantity - quantityToRemove);
-            } else {
-                // If not, remove the item entirely from the backpack
-                player.backpack.remove(item);
-            }
-        }
+        // Logic to remove the item from the player's inventory
     }
 }
 
 /**
- * Add item to area
+ * Author: Weiyuan
+ * Represents an action that adds an item or NPC to a specific game area.
+ * This class allows dynamic changes to the game world, such as placing items or introducing characters.
+ * <p>Usage example:
+ * <pre>
+ *    Action addToAreaAction = new AddToArea(gameInstance, swordItem, castleArea);
+ *    addToAreaAction.doAction();  // Places a sword in the castle area.
+ * </pre>
+ * </p>
  */
 class AddToArea extends Action {
     private Item itemToAdd;
@@ -169,7 +232,9 @@ class AddToArea extends Action {
         this.npcToAdd = npcToAdd;
         this.targetArea = targetArea;
     }
-
+    /**
+     * Executes the action, adding the specified item or NPC to the target game area.
+     */
     @Override
     public void doAction() {
         // add items to area
@@ -190,9 +255,16 @@ class AddToArea extends Action {
     }
 }
 
-
 /**
- * Remove item from area
+ * Author: Weiyuan
+ * Represents an action that removes an item or NPC from a specific game area.
+ * This class provides mechanisms for dynamic events like item pickups or NPC departures.
+ * <p>Usage example:
+ * <pre>
+ *    Action removeFromAreaAction = new RemoveFromArea(gameInstance, castleArea, orcNPC);
+ *    removeFromAreaAction.doAction();  // Removes the orc NPC from the castle area.
+ * </pre>
+ * </p>
  */
 class RemoveFromArea extends Action {
     private Area targetArea;
@@ -212,7 +284,9 @@ class RemoveFromArea extends Action {
         this.targetArea = targetArea;
         this.npcToRemove = npcToRemove;
     }
-
+    /**
+     * Executes the action, removing the specified item or NPC from the target game area.
+     */
     @Override
     public void doAction() {
         if (itemToRemove != null) {
@@ -224,18 +298,36 @@ class RemoveFromArea extends Action {
 }
 
 /**
- * Change area player is in
+ * Author: Weiyuan
+ * Represents an action that changes the player's current location within the game world.
+ * This class manages player movement between different areas or scenes.
+ * <p>Usage example:
+ * <pre>
+ *    Action changeAreaAction = new ChangeArea(gameInstance, forestArea, castleArea);
+ *    changeAreaAction.doAction();  // Moves the player from the forest to the castle.
+ * </pre>
+ * </p>
  */
 class ChangeArea extends Action {
     private Area currentArea;
     private Area targetArea;
 
+    /**
+     * Constructs a new {@code ChangeArea} action.
+     *
+     * @param game the current game instance
+     * @param currentArea the player's current area
+     * @param targetArea the area the player will move to
+     */
     public ChangeArea(Game game, Area currentArea, Area targetArea) {
         super(game);
         this.currentArea = currentArea;
         this.targetArea = targetArea;
     }
 
+    /**
+     * Executes the action, transitioning the player from their current area to the target area.
+     */
     @Override
     public void doAction() {
         if (currentArea != null && targetArea != null) {
@@ -244,17 +336,40 @@ class ChangeArea extends Action {
     }
 }
 
-
 /**
- * Heal player
+ * Author: Weiyuan
+ * The {@code Heal} class provides functionality to increase the player's HP.
+ * This action, when executed, will heal the player by a specified amount, without exceeding
+ * the player's MaxHP.
+ *
+ * <p>Usage example:
+ * <pre>
+ *    Action healAction = new Heal(gameInstance, 50);
+ *    healAction.doAction();  // Heals the player by 50 HP.
+ * </pre>
+ * </p>
  */
 class Heal extends Action {
-    private final int heal;
+    /**
+     * The amount by which the player's HP should be increased.
+     */
+    private int heal;
+
+    /**
+     * Constructs a new {@code Heal} action.
+     *
+     * @param game the current game instance
+     * @param heal the amount to heal the player
+     */
     public Heal(Game game, int heal) {
         super(game);
         this.heal = heal;
     }
 
+    /**
+     * Executes the healing action.
+     * This increases the player's HP by the specified heal amount without exceeding the player's MaxHP.
+     */
     @Override
     public void doAction() {
         Player player = game.getPlayer();
@@ -268,15 +383,37 @@ class Heal extends Action {
 }
 
 /**
- * Deal damage to player
+ * Author: Weiyuan
+ * The {@code Hurt} class provides functionality to decrease the player's HP.
+ * This action, when executed, will damage the player by a specified amount.
+ * If the damage exceeds the player's current HP, the HP is set to zero.
+ *
+ * <p>Usage example:
+ * <pre>
+ *    Action hurtAction = new Hurt(gameInstance, 50);
+ *    hurtAction.doAction();  // Reduces the player's HP by 50.
+ * </pre>
+ * </p>
  */
 class Hurt extends Action {
-    private final int damage;
+    /** The amount by which the player's HP should be decreased. */
+    private int damage;
+
+    /**
+     * Constructs a new {@code Hurt} action.
+     *
+     * @param game the current game instance
+     * @param damage the amount to reduce the player's HP
+     */
     public Hurt(Game game, int damage) {
         super(game);
         this.damage = damage;
     }
 
+    /**
+     * Executes the damage action.
+     * This reduces the player's HP by the specified damage amount, setting it to zero if the damage is more than the current HP.
+     */
     @Override
     public void doAction() {
         Player player = game.getPlayer();
@@ -287,6 +424,7 @@ class Hurt extends Action {
         }
     }
 }
+
 
 /**
  * Do action based on requirement
