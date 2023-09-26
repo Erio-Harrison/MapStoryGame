@@ -20,6 +20,22 @@ public class Game {
      */
     public Player player;
 
+    public Area getCurrentArea() {
+        return currentArea;
+    }
+
+    public void setCurrentArea(Area currentArea) {
+        this.currentArea = currentArea;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     /**
      * Scanner to take input from standard in
      */
