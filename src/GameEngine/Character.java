@@ -1,4 +1,5 @@
 package GameEngine;
+import java.util.*;  
 
 /**
  * The Character class represents playable and non-playable characters in the

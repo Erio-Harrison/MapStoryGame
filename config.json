@@ -78,6 +78,7 @@
     ],
     "areas": [
         {
+            "starting_area": true,
             "id": "start_room",
             "display_name": "Fireplace",
             "description": "You stand in empty room in front of a barely lit fireplace.",
