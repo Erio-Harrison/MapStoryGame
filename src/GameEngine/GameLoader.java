@@ -2,6 +2,7 @@ package GameEngine;
 import com.google.gson.Gson;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Loads game from given config file and runs it.
@@ -17,9 +18,10 @@ public class GameLoader {
         try (FileReader reader = new FileReader("config.json")) {
             // Deserialize JSON to Game object
             DataLibraries.Game game = gson.fromJson(reader, DataLibraries.Game.class);
-
             // Now, the `game` object contains the data from the JSON file.
-            System.out.println(game);
+            Map<String, Object> str =  game.getAreas().get(1).getActions().get(0);
+            System.out.println(str.get("choices").getClass().getName());
+
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

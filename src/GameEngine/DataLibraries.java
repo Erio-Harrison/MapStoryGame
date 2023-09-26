@@ -6,6 +6,57 @@ import java.util.Map;
 
 public class DataLibraries {
     /**
+     * Represents the state of a game, containing the player, areas, and items.
+     */
+    public static class Game {
+        private final Player player;
+        private final List<Area> areas;
+        private final List<Item> items;
+
+        /**
+         * Constructs a Game with the given player, areas, and items.
+         *
+         * @param player the player of the game. Must not be null.
+         * @param areas  the list of areas in the game. Must not be null.
+         * @param items  the list of items in the game. Must not be null.
+         */
+        public Game(Player player, List<Area> areas, List<Item> items) {
+            this.player = player;
+            this.areas = areas;
+            this.items = items;
+        }
+
+        /**
+         * @return the player of the game.
+         */
+        public Player getPlayer() {
+            return player;
+        }
+
+        /**
+         * @return an unmodifiable view of the list of areas in the game.
+         */
+        public List<Area> getAreas() {
+            return Collections.unmodifiableList(areas);
+        }
+
+        /**
+         * @return an unmodifiable view of the list of items in the game.
+         */
+        public List<Item> getItems() {
+            return Collections.unmodifiableList(items);
+        }
+
+        @Override
+        public String toString() {
+            return "Game{" +
+                    "player=" + player +
+                    ", areas=" + areas +
+                    ", items=" + items +
+                    '}';
+        }
+    }
+    /**
      * Represents an Area in the game, containing details, actions, items, and NPCs related to this area.
      */
     public static class Area {
@@ -28,9 +79,6 @@ public class DataLibraries {
          */
         public Area(String id, String displayName, String description, List<Map<String, Object>> actions,
                     List<Map<String, Integer>> items, List<NPC> npcs) {
-            if (id == null || displayName == null || description == null || actions == null || items == null || npcs == null) {
-                throw new IllegalArgumentException("Parameters must not be null");
-            }
 
             this.id = id;
             this.displayName = displayName;
@@ -91,57 +139,6 @@ public class DataLibraries {
                     ", actions=" + actions +
                     ", items=" + items +
                     ", npcs=" + npcs +
-                    '}';
-        }
-    }
-    /**
-     * Represents the state of a game, containing the player, areas, and items.
-     */
-    public static class Game {
-        private final Player player;
-        private final List<Area> areas;
-        private final List<Item> items;
-
-        /**
-         * Constructs a Game with the given player, areas, and items.
-         *
-         * @param player the player of the game. Must not be null.
-         * @param areas  the list of areas in the game. Must not be null.
-         * @param items  the list of items in the game. Must not be null.
-         */
-        public Game(Player player, List<Area> areas, List<Item> items) {
-            this.player = player;
-            this.areas = areas;
-            this.items = items;
-        }
-
-        /**
-         * @return the player of the game.
-         */
-        public Player getPlayer() {
-            return player;
-        }
-
-        /**
-         * @return an unmodifiable view of the list of areas in the game.
-         */
-        public List<Area> getAreas() {
-            return Collections.unmodifiableList(areas);
-        }
-
-        /**
-         * @return an unmodifiable view of the list of items in the game.
-         */
-        public List<Item> getItems() {
-            return Collections.unmodifiableList(items);
-        }
-
-        @Override
-        public String toString() {
-            return "Game{" +
-                    "player=" + player +
-                    ", areas=" + areas +
-                    ", items=" + items +
                     '}';
         }
     }
