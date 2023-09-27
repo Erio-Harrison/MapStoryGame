@@ -1,0 +1,47 @@
+{
+    "player": {
+        "max_health": 100,
+        "starting_health": 100,
+        "backpack": []
+    },
+    "items": [],
+    "areas": [
+        {
+            "starting_area": true,
+            "id": "start_room",
+            "display_name": "Fireplace",
+            "action": {
+                "type": "choices",
+                "choices": {
+                    "go forward": {
+                        "type": "action_list",
+                        "actions": [
+                            { "type": "say", "say": "Ouch! You walked into the fire. Why would you do that?" },
+                            { "type": "hurt", "hurt": 10 }
+                        ]
+                    },
+                    "go backward": {
+                        "type": "action_list",
+                        "actions": [
+                            { "type": "say", "say": "You leave the fireplace." },
+                            { "type": "win" }
+                        ]
+                    },
+                    "go upwards": {
+                        "type": "requirement",
+                        "choice_visible_if_requirement_not_met": true,
+                        "requirement": {
+                            "type": "backpack_contains_at_least",
+                            "items": {
+                                "starting_note": 1
+                            }
+                        },
+                        "req_satisfied": { "type": "say", "say": "requirement met" },
+                        "req_not_satisfied": { "type": "say", "say": "requirement not met" }
+                    }
+                }
+            },
+            "items": []
+        }
+    ]
+}

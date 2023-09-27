@@ -1,5 +1,4 @@
 package GameEngine;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -40,8 +39,6 @@ class Choice extends Action {
 
     @Override
     public void doAction() {
-        // [1] tell him to get lost
-        // Enter choice, or b for backpack: b
         int count = 0;
 
         ArrayList<String> choice_strings = new ArrayList<>(this.choices.keySet());
@@ -199,8 +196,12 @@ class AddToBackpack extends Action {
      */
     @Override
     public void doAction() {
-        Player player = game.getPlayer();
-        // Logic to add the item to the player's inventory
+        if (game.player.backpack.containsKey(this.item)) {
+            int currentQuantity = game.player.backpack.get(this.item);
+            game.player.backpack.put(this.item, currentQuantity + 1);
+        } else {
+            game.player.backpack.put(this.item, 1);
+        }
     }
 }
 
@@ -237,8 +238,21 @@ class RemoveFromBackpack extends Action {
      */
     @Override
     public void doAction() {
-        Player player = game.getPlayer();
         // Logic to remove the item from the player's inventory
+        if (game.player.backpack.containsKey(this.item)) {
+            int currentQuantity = game.player.backpack.get(this.item);
+
+            if (currentQuantity >= this.quantityToRemove) {
+                int newQuantity = currentQuantity - this.quantityToRemove;
+                if (newQuantity > 0) {
+                    game.player.backpack.put(this.item, newQuantity);
+                } else {
+                    game.player.backpack.remove(this.item); // Remove the item if the quantity becomes 0
+                }
+            }
+            // If the user wants to remove more than exists, or if the item's quantity is 0, do nothing
+        }
+
     }
 }
 
@@ -407,7 +421,6 @@ class Heal extends Action {
         Player player = game.getPlayer();
         if (player.HP + heal >= player.MaxHP) {
             player.HP = player.MaxHP;
-            // Handle player's death, e.g., end the game or show a specific message.
         } else {
             player.HP += heal;
         }
@@ -452,7 +465,8 @@ class Hurt extends Action {
         player.HP -= damage;
         if (player.HP < 0) {
             player.HP = 0;
-            // Handle player's death, e.g., end the game or show a specific message.
+            System.out.println("You died :(");
+            System.exit(0);
         }
     }
 }
@@ -462,19 +476,29 @@ class Hurt extends Action {
  * Do action based on requirement
  */
 class Requirement extends Action {
-    public Requirement(Game game) {
+    RequirementChecker check;
+    Action satisfied;
+    Action not_satisfied;
+
+    public Requirement(Game game, RequirementChecker check, Action satisfied, Action notSatisfied) {
         super(game);
+        this.check = check;
     }
 
     @Override
     public void doAction() {
+        if (this.check.checkRequirement()) {
+            this.satisfied.doAction();
+        } else {
+            this.not_satisfied.doAction();
+        }
     }
 }
 
 /**
  * Implement type of requirements
  */ 
-abstract class RequirementType {
+abstract class RequirementChecker {
     /**
      * Requirements need to check game state to see if requirement satisfied
      */
@@ -484,15 +508,27 @@ abstract class RequirementType {
      * Check if requirement satisfied
      */
     abstract Boolean checkRequirement();
-
 }
 
 /**
  * Check if item in backpack
  */ 
-class ItemInBackpackCheck extends RequirementType {
+class ItemInBackpackCheck extends RequirementChecker {
+    Map<Item, Integer> items_to_check;
+
+    public ItemInBackpackCheck(Map<Item, Integer> items_to_check) {
+        this.items_to_check= items_to_check;
+    }
+
     @Override
     Boolean checkRequirement() {
-        return null;
+        for (Item item : this.items_to_check.keySet()) {
+            if (!game.player.backpack.containsKey(item)) {
+                return false;
+            } if (game.player.backpack.get(item) <= this.items_to_check.get(item)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

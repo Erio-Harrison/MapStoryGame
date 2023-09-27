@@ -1,4 +1,11 @@
 package GameEngine;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import javax.xml.crypto.Data;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Map;
 import java.util.*;  
 
 /**
@@ -10,10 +17,22 @@ public class GameLoader {
      * @param args There must be one argument, which is the path to config file
      */
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.println("Please provide game config file as argument.");
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(DataLibraries.Action.class, new DataLibraries.ActionDeserializer())
+                .registerTypeAdapter(DataLibraries.RequirementChecker.class, new DataLibraries.RequirementCheckerDeserializer())
+                .create();
+
+        try (FileReader reader = new FileReader("config.json")) {
+            // Deserialize JSON to Game object
+            DataLibraries.Game game = gson.fromJson(reader, DataLibraries.Game.class);
+            System.out.println(game);
+            System.out.println(game.player);
+        } catch (IOException e) {
+            e.printStackTrace();
             System.exit(1);
         }
+
+        System.exit(0);
 
         // create empty game
         Game G = new Game(null, null, null);
@@ -57,4 +76,5 @@ public class GameLoader {
         G.runGame();
 
     }
+
 }
