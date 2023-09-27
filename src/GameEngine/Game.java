@@ -16,24 +16,20 @@ public class Game {
     public ArrayList<Area> areas;
 
     /**
+     * All items in game
+     */
+    public ArrayList<Item> items;
+
+    /**
      * Player information
      */
     public Player player;
 
-    public Area getCurrentArea() {
-        return currentArea;
-    }
-
     public void setCurrentArea(Area currentArea) {
         this.currentArea = currentArea;
     }
-
     public Player getPlayer() {
         return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     /**
@@ -44,12 +40,13 @@ public class Game {
     /**
      * Instantiate a new game
      */
-    public Game(Player player, ArrayList<Area> areas, Area startingArea) {
+    public Game(Player player, ArrayList<Area> areas, ArrayList<Item> items, Area startingArea) {
         // setup scanner
         this.scanner = new Scanner(System.in);
 
         this.player = player;
         this.areas = areas;
+        this.items = items;
         this.currentArea = startingArea;
     }
 
