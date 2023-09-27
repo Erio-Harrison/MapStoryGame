@@ -19,6 +19,7 @@ public class GameLoader {
     public static void main(String[] args) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(DataLibraries.Action.class, new DataLibraries.ActionDeserializer())
+                .registerTypeAdapter(DataLibraries.RequirementChecker.class, new DataLibraries.RequirementCheckerDeserializer())
                 .create();
 
         try (FileReader reader = new FileReader("config.json")) {

@@ -1,10 +1,81 @@
 {
     "player": {
-        "max_health": 100,
         "starting_health": 100,
-        "backpack": []
+        "backpack": {
+            "bandaid": 1,
+            "toothpick": 2
+        }
     },
-    "items": [],
+    "items": [
+        {
+            "id": "gold_coin",
+            "description": "A shiny gold coin.",
+            "interact": {
+                "type": "choices",
+                "choices": {
+                    "eat the coin": { "type": "say", "say": "What? Don't eat the coin!" }
+                }
+            }
+        },
+        {
+            "id": "bandaid",
+            "description": "A bandaid to help heal your wounds",
+            "interact": {
+                "type": "choices",
+                "choices": {
+                    "use the bandaid": { "type": "heal", "heal": 20 }
+                }
+            }
+        },
+        {
+            "id": "garden_gnome",
+            "description": "A smiling garden gnome. It looks to be made of wood"
+        },
+        {
+            "id": "starting_note",
+            "description": "A note with some writing in it",
+            "interact": {
+                "type": "choices",
+                "choices": {
+                    "read the note": { "type": "say", "say": "You read the note. it says: 'Keep the fire going!'" }
+                }
+            }
+        },
+        {
+            "id": "toothpick",
+            "description": "A single toothpick",
+            "interact": {
+                "type": "choices",
+                "choices": {
+                    "prick yourself":  {
+                        "type": "action_list",
+                        "actions": [
+                            { "type": "say", "say": "You prick yourself. Youch." },
+                            { "type": "hurt", "hurt": 1 }
+                        ]
+                    },
+                    "clean your teeth":  {
+                        "type": "action_list",
+                        "actions": [
+                            { "type": "say", "say": "You clean your teeth with the toothpick. Your teeth feel cleaner now." },
+                            { "type": "heal", "heal": 1 }
+                        ]
+                    }
+                }
+            },
+            "uses": 1,
+            "no_more_uses": {
+                "type": "action_list",
+                "actions": [
+                    { "type": "say", "say": "The toothpick disintegrates after you use it" },
+                    { 
+                        "type": "remove_item_from_backpack",
+                        "to_remove": { "toothpick": 1 }
+                    }
+                ]
+            }
+        }
+    ],
     "areas": [
         {
             "starting_area": true,
@@ -21,15 +92,128 @@
                         ]
                     },
                     "go backward": {
+                        "type": "requirement",
+                        "choice_visible_if_requirement_not_met": true,
+                        "requirement": {
+                            "type": "backpack_contains_at_least",
+                            "items": {
+                                "starting_note": 1
+                            }
+                        },
+                        "req_satisfied": {
+                            "type": "action_list",
+                            "actions": [
+                                { "type": "say", "say": "You walk out the door" },
+                                { "type": "change_area", "area": "outside_house" }
+                            ]
+                        },
+                        "req_not_satisfied": { "type": "say", "say": "Hmmm. Is there a note somewhere around?" }
+                    },
+                    "pick up starting note": {
                         "type": "action_list",
                         "actions": [
-                            { "type": "say", "say": "You leave the fireplace." },
-                            { "type": "win" }
+                            { "type": "say", "say": "You put the note into your backpack" },
+                            { "type": "add_item_to_backpack", "to_add": { "starting_note": 1 } },
+                            { "type": "remove_item_from_area", "to_remove": { "starting_note": 1 } }
+                        ]
+                    },
+                    "put gnome in the fire": {
+                        "type": "requirement",
+                        "requirement": {
+                            "type": "backpack_contains_at_least",
+                            "items": { "gnome": 1 }
+                        },
+                        "choice_visible_if_requirement_not_met": false,
+                        "req_satisfied": {
+                            "type": "action_list",
+                            "actions": [
+                                { "type": "say", "say": "You put the gnome in the fireplace. It glows anew! Congratulations, your quest has been fulfilled"},
+                                { "type": "remove_item_from_backpack", "to_remove": { "garden_gnome": 1 } },
+                                { "type": "win" }
+                            ]
+                        }
+                    },
+                    "put note in the fire": {
+                        "type": "requirement",
+                        "requirement": {
+                            "type": "backpack_contains_at_least",
+                            "items": { "starting_note": 1 }
+                        },
+                        "choice_visible_if_requirement_not_met": false,
+                        "req_satisfied": {
+                            "type": "action_list",
+                            "actions": [
+                                { "type": "say", "say": "You put the note in the fireplace. It glows brighter for a second but immediately dies down"}
+                            ]
+                        }
+                    }
+                }
+            },
+            "items": {
+                "starting_note": 1
+            }
+        },
+        {
+            "id": "outside_house",
+            "display_name": "Lawn",
+            "actions": {
+                "type": "choices",
+                "choices": {
+                    "pick up gnome": {
+                        "type": "action_list",
+                        "actions": [
+                            { "type": "say", "say": "You put the gnome into your backpack. It's rather unwieldy." },
+                            { "type": "add_item_to_backpack", "to_add": { "garden_gnome": 1 } },
+                            { "type": "remove_item_from_area", "to_remove": { "garden_gnome": 1 } }
+                        ]
+                    },
+                    "go forward": {
+                        "type": "action_list",
+                        "actions": [
+                            { "type": "say", "say": "You open the door and walk in" },
+                            { "type": "change_area", "area": "start_room" }
                         ]
                     }
                 }
             },
-            "items": []
+            "items": { "garden_gnome": 5 },
+            "npcs": [ 
+                {
+                    "name": "Mr Mysterious",
+                    "initial_interaction": {
+                        "type": "choices",
+                        "choices": {
+                            "say hello": {
+                                "type": "action_list",
+                                "actions": [
+                                    { "type": "say", "say": "You say hello to Mr Mysterious. He looks at you mysteriously and mysteriously moves his hand. You are unsure whether he's trying give you a high-five or a handshake" },
+                                    {
+                                        "type": "choices",
+                                        "choices": {
+                                            "Try to dap him up": {
+                                                "type": "action_list",
+                                                "actions": [
+                                                    { "type": "say", "say": "That was the cleanest dap you've ever done in your life. Mr Mysterious smiles and gives you 100 gold coins" },
+                                                    { "type": "add_item_to_backpack", "to_add": { "gold_coin": 100 } }
+                                                ]
+                                            },
+                                            "Try to shake his hand": { "type": "say", "say": "You shake Mr Mysterious' hand. He nods his head." }
+                                        }
+                                    }
+                                ]
+                            },
+                            "tell him to get lost": {
+                                "type": "action_list",
+                                "actions": [
+                                    { "type": "say", "say": "You speak rudely to Mr Mysterious for no reason. He beats you up, as he should" },
+                                    { "type": "hurt", "hurt": 50 }
+                                ]
+                            }
+                        }
+                    },
+                    "repeat_interaction": {"type": "say", "say": "You try to continue talking to Mr Mysterious. He simply looks at you mysteriously." }
+                }
+            ]
         }
     ]
 }
