@@ -44,14 +44,20 @@ public class DataLibraries {
             JsonObject jsonObject = json.getAsJsonObject();
             String type = jsonObject.get("type").getAsString();
 
-            return switch (type) {
-                case "choices" -> context.deserialize(jsonObject, Choice.class);
-                case "action_list" -> context.deserialize(jsonObject, ActionList.class);
-                case "say" -> context.deserialize(jsonObject, Say.class);
-                case "hurt" -> context.deserialize(jsonObject, Hurt.class);
-                case "win" -> context.deserialize(jsonObject, Win.class);
-                default -> throw new JsonParseException("Unknown action type: " + type);
-            };
+            switch (type) {
+                case "choices":
+                    return context.deserialize(jsonObject, Choice.class);
+                case "action_list":
+                    return context.deserialize(jsonObject, ActionList.class);
+                case "say":
+                    return context.deserialize(jsonObject, Say.class);
+                case "hurt":
+                    return context.deserialize(jsonObject, Hurt.class);
+                case "win":
+                    return context.deserialize(jsonObject, Win.class);
+                default:
+                    throw new JsonParseException("Unknown action type: " + type);
+            }
         }
     }
 
