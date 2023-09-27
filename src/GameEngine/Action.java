@@ -1,4 +1,6 @@
 package GameEngine;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import java.util.ArrayList;
 
@@ -25,20 +27,34 @@ public abstract class Action {
     public abstract void doAction();
 }
 
-// NOTE
-// These subclasses are just placeholders to flesh out
-// They all need more parameters in their constructor and other stuff
-
 /**
  * User choice
  */
 class Choice extends Action {
-    public Choice(Game game) {
+    Map<String, Action> choices;
+
+    public Choice(Game game, Map<String, Action> choices) {
         super(game);
+        this.choices = choices;
     }
 
     @Override
     public void doAction() {
+        // [1] tell him to get lost
+        // Enter choice, or b for backpack: b
+        int count = 0;
+
+        ArrayList<String> choice_strings = new ArrayList<>(this.choices.keySet());
+        for (String s : choice_strings) {
+            count++;
+            System.out.println("[" + count + "] " + s);
+        }
+        System.out.print("Select choice (enter a number between 1 and " + count + "): ");
+        String choice = this.game.scanner.nextLine();
+        int n_choice = Integer.parseInt(choice) - 1;
+
+        // do the corresponding choice
+        this.choices.get(choice_strings.get(n_choice)).doAction();
     }
 }
 
@@ -46,12 +62,33 @@ class Choice extends Action {
  * List of actions
  */
 class ActionList extends Action {
-    public ActionList(Game game) {
+    ArrayList<Action> action_list;
+
+    public ActionList(Game game, ArrayList<Action> action_list) {
+        super(game);
+        this.action_list = action_list;
+    }
+
+    @Override
+    public void doAction() {
+        for (Action a : this.action_list) {
+            a.doAction();
+        }
+    }
+}
+
+/**
+ * List of actions
+ */
+class Win extends Action {
+    public Win(Game game) {
         super(game);
     }
 
     @Override
     public void doAction() {
+        System.out.println("you win!");
+        System.exit(0);
     }
 }
 
@@ -309,19 +346,16 @@ class RemoveFromArea extends Action {
  * </p>
  */
 class ChangeArea extends Action {
-    private Area currentArea;
     private Area targetArea;
 
     /**
      * Constructs a new {@code ChangeArea} action.
      *
      * @param game the current game instance
-     * @param currentArea the player's current area
      * @param targetArea the area the player will move to
      */
-    public ChangeArea(Game game, Area currentArea, Area targetArea) {
+    public ChangeArea(Game game, Area targetArea) {
         super(game);
-        this.currentArea = currentArea;
         this.targetArea = targetArea;
     }
 
@@ -330,9 +364,7 @@ class ChangeArea extends Action {
      */
     @Override
     public void doAction() {
-        if (currentArea != null && targetArea != null) {
-            game.setCurrentArea(targetArea);
-        }
+        game.setCurrentArea(targetArea);
     }
 }
 

@@ -1,9 +1,15 @@
 package GameEngine;
+import java.util.*;  
 
 /**
  * The NPC class represents non-playable characters in the game
  */
 public class NPC extends Character {
+    /**
+     * NPC name
+     */
+    public String name;
+
     /**
      * NPC initial interaction
      */
@@ -27,7 +33,9 @@ public class NPC extends Character {
             repeatInteraction.doAction();
         } else {
             initialInteraction.doAction();
-            hasSpokenTo = false;
+            hasSpokenTo = true;
         }
     }
+
+    // make constructor and hasSpokenTo is false
 }
