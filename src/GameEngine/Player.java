@@ -5,7 +5,7 @@ import java.util.*;
  * Represents the player of the game
  */
 public class Player extends Character {
-    Map<Item, Integer> backpack;
+    public Map<Item, Integer> backpack;
 
     public Player(int HP, int MaxHP, Map<Item, Integer> backpack) {
         super(HP, MaxHP);

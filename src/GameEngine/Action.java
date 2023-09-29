@@ -245,8 +245,8 @@ class RemoveFromBackpack extends Action {
      * Constructs a new {@code RemoveFromBackpack} action.
      *
      * @param game the current game instance
-     * @param item the item to be removed from the player's inventory
-     * @param quantityToRemove the quantity of the item to remove
+     * @paramtem the item to be removed from the player's inventory
+     * @paramquantityToRemove the quantity of the item to remove
      */
     public RemoveFromBackpack(Game game, Map<Item, Integer> itemsToRemove) {
         super(game);
