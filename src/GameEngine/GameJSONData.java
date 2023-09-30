@@ -557,10 +557,39 @@ public class GameJSONData {
     }
 
     /**
+     * Represents a requirement checker that checks if certain items are present in the backpack.
+     * This class is used to validate if certain conditions are met in the game, based on the items present in the backpack.
+     */
+    public static class ItemInAreaCheck extends  RequirementChecker {
+        @Expose
+        public String area;
+        @Expose
+        public Map<String, Integer> items;
+
+        /**
+         * Generates a corresponding GameEngine.ItemInBackpackCheck from this ItemInBackpackCheck.
+         *
+         * @param G The game instance associated with this ItemInBackpackCheck.
+         * @param jsonGame The JSON game data associated with this ItemInBackpackCheck.
+         * @return A new GameEngine.ItemInBackpackCheck instance that can be used to check game requirements.
+         */
+        @Override
+        public GameEngine.RequirementChecker generateRequirement(GameEngine.Game G, Game jsonGame) {
+            Map <GameEngine.Item, Integer> itemsToCheck = new HashMap<>();
+
+            for (String id: this.items.keySet()) {
+                Integer amount_to_check = this.items.get(id);
+                itemsToCheck.put(jsonGame.retrieveItem(id), amount_to_check);
+            }
+
+            return new GameEngine.ItemInAreaCheck(G, itemsToCheck, jsonGame.retrieveArea(area));
+        }
+    }
+
+    /**
      * Deserializer for RequirementChecker, used to deserialize JSON representations of RequirementChecker objects.
      * The deserializer reads the 'type' attribute from the JSON object to determine the specific type of RequirementChecker to instantiate.
      */
-
     static class RequirementCheckerDeserializer implements JsonDeserializer<RequirementChecker> {
         /**
          * Deserializes the given JsonElement into a corresponding RequirementChecker object.
@@ -580,6 +609,8 @@ public class GameJSONData {
             switch (type) {
                 case "backpack_contains_at_least":
                     return context.deserialize(jsonObject, ItemInBackpackCheck.class);
+                case "area_contains_at_least":
+                    return context.deserialize(jsonObject, ItemInAreaCheck.class);
                 default:
                     throw new JsonParseException("Unknown requirement type: " + type);
             }

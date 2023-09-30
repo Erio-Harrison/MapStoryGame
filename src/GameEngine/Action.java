@@ -46,8 +46,8 @@ class Choice extends Action {
         for (String s : this.choices.keySet()) {
             Action a = this.choices.get(s);
 
-            // do not add requirement to choice if not satisfied
             if (a instanceof Requirement) {
+                // do not add requirement to choice if not satisfied
                 if (((Requirement) a).is_visible_if_not_satisfied) {
                     choice_strings.add(s);
                 } else {
@@ -581,6 +581,32 @@ class ItemInBackpackCheck extends RequirementChecker {
             if (!game.player.backpack.containsKey(item)) {
                 return false;
             } if (game.player.backpack.get(item) < this.items_to_check.get(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/**
+ * Check if item in backpack
+ */
+class ItemInAreaCheck extends RequirementChecker {
+    Map<Item, Integer> items_to_check;
+    Area area;
+
+    public ItemInAreaCheck(Game game, Map<Item, Integer> items_to_check, Area area_to_check_in) {
+        this.items_to_check= items_to_check;
+        this.area = area_to_check_in;
+        this.game = game;
+    }
+
+    @Override
+    Boolean checkRequirement() {
+        for (Item item : this.items_to_check.keySet()) {
+            if (!this.area.Items.containsKey(item)) {
+                return false;
+            } if (this.area.Items.get(item) < this.items_to_check.get(item)) {
                 return false;
             }
         }
