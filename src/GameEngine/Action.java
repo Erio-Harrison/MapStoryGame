@@ -199,7 +199,7 @@ class AddToBackpack extends Action {
      * Constructs a new {@code AddToBackpack} action.
      *
      * @param game the current game instance
-     * @param item the item to be added to the player's inventory
+     * @param itemsToAdd the item to be added to the player's inventory
      */
     public AddToBackpack(Game game, Map<Item, Integer> itemsToAdd) {
         super(game);

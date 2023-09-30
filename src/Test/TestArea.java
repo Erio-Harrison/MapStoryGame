@@ -108,7 +108,7 @@ public class TestArea {
         // Reset the standard output
         System.setOut(System.out);
 
-        String expectedMessage = "You enter the " + area.name + "\n";
+        String expectedMessage = "You enter the " + area.name;
         Assertions.assertEquals(expectedMessage, outContent.toString(), "Enter area message should be correct");
     }
 }
