@@ -41,7 +41,25 @@ class Choice extends Action {
     public void doAction() {
         int count = 0;
 
-        ArrayList<String> choice_strings = new ArrayList<>(this.choices.keySet());
+        ArrayList<String> choice_strings = new ArrayList<>();
+
+        for (String s : this.choices.keySet()) {
+            Action a = this.choices.get(s);
+
+            if (a instanceof Requirement) {
+                // do not add requirement to choice if not satisfied
+                if (((Requirement) a).is_visible_if_not_satisfied) {
+                    choice_strings.add(s);
+                } else {
+                    if (((Requirement) a).check.checkRequirement()) {
+                      choice_strings.add(s);
+                    }
+                }
+            } else {
+                choice_strings.add(s);
+            }
+        }
+
         for (String s : choice_strings) {
             count++;
             System.out.println("[" + count + "] " + s);
@@ -511,12 +529,14 @@ class Requirement extends Action {
     RequirementChecker check;
     Action satisfied;
     Action not_satisfied;
+    boolean is_visible_if_not_satisfied;
 
-    public Requirement(Game game, RequirementChecker check, Action satisfied, Action notSatisfied) {
+    public Requirement(Game game, RequirementChecker check, Action satisfied, Action notSatisfied, boolean is_visible) {
         super(game);
         this.check = check;
         this.satisfied = satisfied;
         this.not_satisfied = notSatisfied;
+        this.is_visible_if_not_satisfied = is_visible;
     }
 
     @Override
@@ -561,6 +581,32 @@ class ItemInBackpackCheck extends RequirementChecker {
             if (!game.player.backpack.containsKey(item)) {
                 return false;
             } if (game.player.backpack.get(item) < this.items_to_check.get(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/**
+ * Check if item in backpack
+ */
+class ItemInAreaCheck extends RequirementChecker {
+    Map<Item, Integer> items_to_check;
+    Area area;
+
+    public ItemInAreaCheck(Game game, Map<Item, Integer> items_to_check, Area area_to_check_in) {
+        this.items_to_check= items_to_check;
+        this.area = area_to_check_in;
+        this.game = game;
+    }
+
+    @Override
+    Boolean checkRequirement() {
+        for (Item item : this.items_to_check.keySet()) {
+            if (!this.area.Items.containsKey(item)) {
+                return false;
+            } if (this.area.Items.get(item) < this.items_to_check.get(item)) {
                 return false;
             }
         }
