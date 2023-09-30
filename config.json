@@ -114,14 +114,14 @@
                         "actions": [
                             { "type": "say", "say": "You put the note into your backpack" },
                             { "type": "add_item_to_backpack", "to_add": { "starting_note": 1 } },
-                            { "type": "remove_item_from_area", "to_remove": { "starting_note": 1 } }
+                            { "type": "remove_item_from_area", "area": "start_room", "to_remove": { "starting_note": 1 } }
                         ]
                     },
                     "put gnome in the fire": {
                         "type": "requirement",
                         "requirement": {
                             "type": "backpack_contains_at_least",
-                            "items": { "gnome": 1 }
+                            "items": { "garden_gnome": 1 }
                         },
                         "choice_visible_if_requirement_not_met": false,
                         "req_satisfied": {
@@ -156,7 +156,7 @@
         {
             "id": "outside_house",
             "display_name": "Lawn",
-            "actions": {
+            "action": {
                 "type": "choices",
                 "choices": {
                     "pick up gnome": {
@@ -164,7 +164,7 @@
                         "actions": [
                             { "type": "say", "say": "You put the gnome into your backpack. It's rather unwieldy." },
                             { "type": "add_item_to_backpack", "to_add": { "garden_gnome": 1 } },
-                            { "type": "remove_item_from_area", "to_remove": { "garden_gnome": 1 } }
+                            { "type": "remove_item_from_area", "area": "outside_house",  "to_remove": { "garden_gnome": 1 } }
                         ]
                     },
                     "go forward": {

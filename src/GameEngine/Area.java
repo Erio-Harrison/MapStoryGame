@@ -13,7 +13,7 @@ public class Area {
     /**
      * Items in area
      */
-    public ArrayList<Item> Items;
+    public Map<Item, Integer> Items;
 
     /**
      * Area interaction
@@ -28,7 +28,7 @@ public class Area {
     /**
      * constructor
      */
-    public Area(String name, ArrayList<NPC> NPCs, ArrayList<Item> Items, Action action) {
+    public Area(String name, ArrayList<NPC> NPCs, Map<Item, Integer> Items, Action action) {
         this.name = name;
         this.NPCs = NPCs;
         this.Items = Items;

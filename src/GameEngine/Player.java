@@ -7,7 +7,8 @@ import java.util.*;
 public class Player extends Character {
     Map<Item, Integer> backpack;
 
-    public Player(Map<Item, Integer> backpack) {
+    public Player(int HP, int MaxHP, Map<Item, Integer> backpack) {
+        super(HP, MaxHP);
         this.backpack = backpack;
     }
 

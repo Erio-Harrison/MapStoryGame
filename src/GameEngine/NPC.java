@@ -37,5 +37,11 @@ public class NPC extends Character {
         }
     }
 
-    // make constructor and hasSpokenTo is false
+    public NPC(int HP, int MaxHP, String name, Action initialInteraction, Action repeatInteraction) {
+        super(HP, MaxHP);
+        this.hasSpokenTo = false;
+        this.name = name;
+        this.initialInteraction = initialInteraction;
+        this.repeatInteraction = repeatInteraction;
+    }
 }

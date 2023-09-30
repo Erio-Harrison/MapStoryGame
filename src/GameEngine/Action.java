@@ -75,6 +75,22 @@ class ActionList extends Action {
 }
 
 /**
+ * nop
+ */
+class DoNothing extends Action {
+    ArrayList<Action> action_list;
+
+    public DoNothing(Game game) {
+        super(game);
+    }
+
+    @Override
+    public void doAction() {
+    }
+}
+
+
+/**
  * List of actions
  */
 class Win extends Action {
@@ -177,7 +193,7 @@ class Fight extends Action {
  * </p>
  */
 class AddToBackpack extends Action {
-    private Item item;
+    private Map<Item, Integer> itemsToAdd;
 
     /**
      * Constructs a new {@code AddToBackpack} action.
@@ -185,9 +201,9 @@ class AddToBackpack extends Action {
      * @param game the current game instance
      * @param item the item to be added to the player's inventory
      */
-    public AddToBackpack(Game game, Item item) {
+    public AddToBackpack(Game game, Map<Item, Integer> itemsToAdd) {
         super(game);
-        this.item = item;
+        this.itemsToAdd = itemsToAdd;
     }
 
     /**
@@ -196,11 +212,16 @@ class AddToBackpack extends Action {
      */
     @Override
     public void doAction() {
-        if (game.player.backpack.containsKey(this.item)) {
-            int currentQuantity = game.player.backpack.get(this.item);
-            game.player.backpack.put(this.item, currentQuantity + 1);
-        } else {
-            game.player.backpack.put(this.item, 1);
+        // add items to area
+        for (Item item : this.itemsToAdd.keySet()) {
+            int toAdd = this.itemsToAdd.get(item);
+
+            if (game.player.backpack.containsKey(item)) {
+                int currentQuantity = game.player.backpack.get(item);
+                game.player.backpack.put(item, currentQuantity + toAdd);
+            } else {
+                game.player.backpack.put(item, toAdd);
+            }
         }
     }
 }
@@ -217,7 +238,7 @@ class AddToBackpack extends Action {
  * </p>
  */
 class RemoveFromBackpack extends Action {
-    private Item item;
+    private Map<Item, Integer> itemsToRemove;
     private int quantityToRemove;
 
     /**
@@ -227,10 +248,9 @@ class RemoveFromBackpack extends Action {
      * @param item the item to be removed from the player's inventory
      * @param quantityToRemove the quantity of the item to remove
      */
-    public RemoveFromBackpack(Game game, Item item, int quantityToRemove) {
+    public RemoveFromBackpack(Game game, Map<Item, Integer> itemsToRemove) {
         super(game);
-        this.item = item;
-        this.quantityToRemove = quantityToRemove;
+        this.itemsToRemove = itemsToRemove;
     }
 
     /**
@@ -238,21 +258,20 @@ class RemoveFromBackpack extends Action {
      */
     @Override
     public void doAction() {
-        // Logic to remove the item from the player's inventory
-        if (game.player.backpack.containsKey(this.item)) {
-            int currentQuantity = game.player.backpack.get(this.item);
+        for (Item item : this.itemsToRemove.keySet()) {
+            int toRemove = this.itemsToRemove.get(item);
 
-            if (currentQuantity >= this.quantityToRemove) {
-                int newQuantity = currentQuantity - this.quantityToRemove;
-                if (newQuantity > 0) {
-                    game.player.backpack.put(this.item, newQuantity);
+            if (game.player.backpack.containsKey(item)) {
+                int currentQuantity = game.player.backpack.get(item);
+
+                if (currentQuantity > toRemove) {
+                    int newQuantity = currentQuantity - toRemove;
+                    game.player.backpack.put(item, newQuantity);
                 } else {
-                    game.player.backpack.remove(this.item); // Remove the item if the quantity becomes 0
+                    game.player.backpack.remove(item);
                 }
             }
-            // If the user wants to remove more than exists, or if the item's quantity is 0, do nothing
         }
-
     }
 }
 
@@ -268,41 +287,32 @@ class RemoveFromBackpack extends Action {
  * </p>
  */
 class AddToArea extends Action {
-    private Item itemToAdd;
-    private NPC npcToAdd;
+    private Map<Item, Integer> itemsToAdd;
     private Area targetArea;
 
-    public AddToArea(Game game, Item itemToAdd, Area targetArea) {
+    public AddToArea(Game game, Map<Item, Integer> itemToAdd, Area targetArea) {
         super(game);
-        this.itemToAdd = itemToAdd;
+        this.itemsToAdd = itemToAdd;
         this.targetArea = targetArea;
     }
 
-    public AddToArea(Game game, NPC npcToAdd, Area targetArea) {
-        super(game);
-        this.npcToAdd = npcToAdd;
-        this.targetArea = targetArea;
-    }
     /**
      * Executes the action, adding the specified item or NPC to the target game area.
      */
     @Override
     public void doAction() {
         // add items to area
-        if (itemToAdd != null) {
-            if (targetArea.Items == null) {
-                targetArea.Items = new ArrayList<Item>();
+        for (Item item : this.itemsToAdd.keySet()) {
+            int toAdd = this.itemsToAdd.get(item);
+
+            if (targetArea.Items.containsKey(item)) {
+                int currentQuantity = targetArea.Items.get(item);
+                targetArea.Items.put(item, currentQuantity + toAdd);
+            } else {
+                targetArea.Items.put(item, toAdd);
             }
-            targetArea.Items.add(itemToAdd);
         }
 
-        // add NPCs to area
-        if (npcToAdd != null) {
-            if (targetArea.NPCs == null) {
-                targetArea.NPCs = new ArrayList<NPC>();
-            }
-            targetArea.NPCs.add(npcToAdd);
-        }
     }
 }
 
@@ -319,31 +329,33 @@ class AddToArea extends Action {
  */
 class RemoveFromArea extends Action {
     private Area targetArea;
-    private Item itemToRemove;
-    private NPC npcToRemove;
+    private Map<Item, Integer> itemsToRemove;
 
     // Constructor for removing an item
-    public RemoveFromArea(Game game, Area targetArea, Item itemToRemove) {
+    public RemoveFromArea(Game game, Map<Item, Integer> itemsToRemove, Area targetArea) {
         super(game);
         this.targetArea = targetArea;
-        this.itemToRemove = itemToRemove;
+        this.itemsToRemove = itemsToRemove;
     }
 
-    // Constructor for removing an NPC
-    public RemoveFromArea(Game game, Area targetArea, NPC npcToRemove) {
-        super(game);
-        this.targetArea = targetArea;
-        this.npcToRemove = npcToRemove;
-    }
     /**
      * Executes the action, removing the specified item or NPC from the target game area.
      */
     @Override
     public void doAction() {
-        if (itemToRemove != null) {
-            targetArea.Items.remove(itemToRemove);
-        } else if (npcToRemove != null) {
-            targetArea.NPCs.remove(npcToRemove);
+        for (Item item : this.itemsToRemove.keySet()) {
+            int toRemove = this.itemsToRemove.get(item);
+
+            if (targetArea.Items.containsKey(item)) {
+                int currentQuantity = targetArea.Items.get(item);
+
+                if (currentQuantity > toRemove) {
+                    int newQuantity = currentQuantity - toRemove;
+                    targetArea.Items.put(item, newQuantity);
+                } else {
+                    targetArea.Items.remove(item);
+                }
+            }
         }
     }
 }
@@ -483,6 +495,8 @@ class Requirement extends Action {
     public Requirement(Game game, RequirementChecker check, Action satisfied, Action notSatisfied) {
         super(game);
         this.check = check;
+        this.satisfied = satisfied;
+        this.not_satisfied = notSatisfied;
     }
 
     @Override
@@ -516,8 +530,9 @@ abstract class RequirementChecker {
 class ItemInBackpackCheck extends RequirementChecker {
     Map<Item, Integer> items_to_check;
 
-    public ItemInBackpackCheck(Map<Item, Integer> items_to_check) {
+    public ItemInBackpackCheck(Game game, Map<Item, Integer> items_to_check) {
         this.items_to_check= items_to_check;
+        this.game = game;
     }
 
     @Override

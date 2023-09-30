@@ -16,4 +16,10 @@ public abstract class Character {
      * The max HP of the character.
      */
     public int MaxHP;
+
+    public Character(int HP, int MaxHP) {
+        this.HP = HP;
+        this.MaxHP = MaxHP;
+    }
+
 }
