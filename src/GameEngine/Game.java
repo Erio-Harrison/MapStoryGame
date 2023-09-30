@@ -85,8 +85,6 @@ public class Game {
                     }
                     break;
                 case "move":
-                    // Here, you can let the player choose which area to move to, and then change the currentArea accordingly.
-                    // For example:
                     moveArea();
                     break;
                 case "exit":
@@ -99,8 +97,6 @@ public class Game {
     }
 
     private void moveArea() {
-        // Example logic to move to a different area.
-        // You should replace this with the actual logic based on your game design.
         if (areas.isEmpty()) {
             System.out.println("There are no other areas to move to.");
             return;
