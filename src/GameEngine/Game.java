@@ -50,16 +50,47 @@ public class Game {
         this.currentArea = startingArea;
     }
 
+    private String readInputWithDefault() {
+        try {
+            return scanner.nextLine();
+        } catch (NoSuchElementException e) {
+            return "exit";
+        }
+    }
+
     public void performAction() {
         while (true) {
-            System.out.print("Type 'inspect' to inspect backpack, 'say' to talk to NPC,\n 'move' to move to another area, or 'exit' to exit: ");
-            String input = scanner.nextLine();
+            System.out.print("Type 'inspect' to inspect backpack, 'talk' to talk to NPC,\n 'move' to move to another area, or 'exit' to exit: ");
+            String input = readInputWithDefault(); // Use the new method here
             switch (input.trim().toLowerCase()) {
                 case "inspect":
                     player.inspectBackpack();
                     break;
-                case "say":
-                    interactWithNPC();
+                case "talk":
+                    if (currentArea.NPCs.isEmpty()) {
+                        System.out.println("There are no NPCs to talk to in this area.");
+                        break;
+                    }
+                    // Letting the player choose which NPC to talk to.
+                    for (int i = 0; i < currentArea.NPCs.size(); i++) {
+                        System.out.println("[" + i + "] " + currentArea.NPCs.get(i).name);
+                    }
+                    System.out.print("Select NPC number to talk to, or type 'back' to go back: ");
+                    String npcInput = scanner.nextLine();
+                    if ("back".equalsIgnoreCase(npcInput.trim())) {
+                        break;
+                    }
+                    try {
+                        int selectedIndex = Integer.parseInt(npcInput);
+                        if (selectedIndex < 0 || selectedIndex >= currentArea.NPCs.size()) {
+                            System.out.println("Invalid choice. Please select a valid NPC number or type 'back' to go back.");
+                        } else {
+                            NPC selectedNPC = currentArea.NPCs.get(selectedIndex);
+                            selectedNPC.interact();
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a number corresponding to the NPC or type 'back' to go back.");
+                    }
                     break;
                 case "move":
                     moveArea();
@@ -103,33 +134,6 @@ public class Game {
                 System.out.println("Invalid input. Please enter a number corresponding to the area or type 'back' to go back.");
             }
             System.out.print("Select area number to move to, or type 'back' to go back: ");
-        }
-    }
-    public void interactWithNPC() {
-        if (currentArea.NPCs.isEmpty()) {
-            System.out.println("There are no NPCs to talk to in this area.");
-            return;
-        }
-
-        for (int i = 0; i < currentArea.NPCs.size(); i++) {
-            System.out.println("[" + i + "] " + currentArea.NPCs.get(i).name);
-        }
-
-        System.out.print("Select NPC number to talk to, or type 'back' to go back: ");
-        String npcInput = scanner.nextLine();
-        if ("back".equalsIgnoreCase(npcInput.trim())) {
-            return;
-        }
-        try {
-            int selectedIndex = Integer.parseInt(npcInput);
-            if (selectedIndex < 0 || selectedIndex >= currentArea.NPCs.size()) {
-                System.out.println("Invalid choice. Please select a valid NPC number or type 'back' to go back.");
-            } else {
-                NPC selectedNPC = currentArea.NPCs.get(selectedIndex);
-                selectedNPC.interact(); // Or equivalent method to start interaction
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a number corresponding to the NPC or type 'back' to go back.");
         }
     }
 
