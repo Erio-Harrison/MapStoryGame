@@ -52,7 +52,7 @@ public class Game {
 
     public void performAction() {
         while (true) {
-            System.out.print("Type 'inspect' to inspect backpack, 'talk' to talk to NPC, 'move' to move to another area, or 'exit' to exit: ");
+            System.out.print("Type 'inspect' to inspect backpack, 'talk' to talk to NPC,\n 'move' to move to another area, or 'exit' to exit: ");
             String input = scanner.nextLine();
             switch (input.trim().toLowerCase()) {
                 case "inspect":
