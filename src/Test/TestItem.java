@@ -49,4 +49,16 @@ public class TestItem {
         GameEngine.Item item = new GameEngine.Item("Test Item", "Description", action);
         Assertions.assertEquals(action, item.interact, "Item interaction should be equal to assigned action");
     }
+
+    @Test
+    public void testItemDescription() {
+        GameEngine.Item item = new GameEngine.Item("TestItemID", "TestItemDescription", null);
+        Assertions.assertEquals("TestItemDescription", item.description, "Item description should be initialized correctly");
+    }
+
+    @Test
+    public void testItemID() {
+        GameEngine.Item item = new GameEngine.Item("TestItemID", "TestItemDescription", null);
+        Assertions.assertEquals("TestItemID", item.ID, "Item ID should be initialized correctly");
+    }
 }

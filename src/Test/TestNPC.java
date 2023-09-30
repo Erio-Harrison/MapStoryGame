@@ -50,4 +50,16 @@ public class TestNPC {
         Assertions.assertFalse(initialInteraction.isActionDone, "initialInteraction should not be invoked");
         Assertions.assertTrue(repeatInteraction.isActionDone, "repeatInteraction should be invoked this time");
     }
+
+    @Test
+    public void testNPCHealth() {
+        NPC npc = new NPC( 50, 100, "TestNPC", null, null);
+        Assertions.assertEquals(50, npc.HP, "NPC health should be initialized correctly");
+    }
+
+    @Test
+    public void testNPCMaxHealth() {
+        NPC npc = new NPC( 50, 100, "TestNPC", null, null);
+        Assertions.assertEquals(100, npc.MaxHP, "NPC max health should be initialized correctly");
+    }
 }

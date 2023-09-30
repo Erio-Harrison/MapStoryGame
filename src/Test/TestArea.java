@@ -3,6 +3,8 @@ import GameEngine.GameJSONData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -73,5 +75,40 @@ public class TestArea {
         GameEngine.Area area = new GameEngine.Area("Test Area", new ArrayList<>(), new HashMap<>(), action);
         area.enterArea();
         Assertions.assertTrue(actionExecuted[0], "Area action should be executed when entering the area");
+    }
+
+    @Test
+    public void testAreaName() {
+        GameEngine.Action dummyAction = new GameEngine.Action(null) {
+            @Override
+            public void doAction() {
+            }
+        };
+        GameEngine.Area area = new GameEngine.Area("Test Area", new ArrayList<>(), new HashMap<>(), dummyAction);
+        Assertions.assertEquals("Test Area", area.name, "Area name should be initialized correctly");
+    }
+
+    @Test
+    public void testEnterAreaMessage() {
+        GameEngine.Action dummyAction = new GameEngine.Action(null) {
+            @Override
+            public void doAction() {
+                // Dummy action
+            }
+        };
+        GameEngine.Area area = new GameEngine.Area("Test Area", new ArrayList<>(), new HashMap<>(), dummyAction);
+
+        // Capture the standard output
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        // Call the method
+        area.enterArea();
+
+        // Reset the standard output
+        System.setOut(System.out);
+
+        String expectedMessage = "You enter the " + area.name + "\n";
+        Assertions.assertEquals(expectedMessage, outContent.toString(), "Enter area message should be correct");
     }
 }
