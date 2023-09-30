@@ -52,30 +52,42 @@ public class Game {
 
     public void performAction() {
         while (true) {
-            System.out.print("Type 'inspect' to inspect backpack, 'talk' to talk to NPC, or 'exit' to exit: ");
+            System.out.print("Type 'inspect' to inspect backpack, 'talk' to talk to NPC, 'move' to move to another area, or 'exit' to exit: ");
             String input = scanner.nextLine();
             switch (input.trim().toLowerCase()) {
                 case "inspect":
                     player.inspectBackpack();
                     break;
                 case "talk":
-                    List<NPC> npcs = currentArea.getNPCs();
-                    if (npcs.isEmpty()) {
+                    if (currentArea.NPCs.isEmpty()) {
                         System.out.println("There are no NPCs to talk to in this area.");
                         break;
                     }
-                    System.out.println("Select an NPC to talk to:");
-                    for (int i = 0; i < npcs.size(); i++) {
-                        System.out.println("[" + (i + 1) + "] " + npcs.get(i).name);
+                    // Letting the player choose which NPC to talk to.
+                    for (int i = 0; i < currentArea.NPCs.size(); i++) {
+                        System.out.println("[" + i + "] " + currentArea.NPCs.get(i).name);
                     }
-                    int selectedIdx = scanner.nextInt();
-                    scanner.nextLine(); // consume the newline
-                    if (selectedIdx < 1 || selectedIdx > npcs.size()) {
-                        System.out.println("Invalid choice. Please try again.");
+                    System.out.print("Select NPC number to talk to, or type 'back' to go back: ");
+                    String npcInput = scanner.nextLine();
+                    if ("back".equalsIgnoreCase(npcInput.trim())) {
                         break;
                     }
-                    NPC selectedNPC = npcs.get(selectedIdx - 1);
-                    selectedNPC.interact();
+                    try {
+                        int selectedIndex = Integer.parseInt(npcInput);
+                        if (selectedIndex < 0 || selectedIndex >= currentArea.NPCs.size()) {
+                            System.out.println("Invalid choice. Please select a valid NPC number or type 'back' to go back.");
+                        } else {
+                            NPC selectedNPC = currentArea.NPCs.get(selectedIndex);
+                            selectedNPC.interact();
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input. Please enter a number corresponding to the NPC or type 'back' to go back.");
+                    }
+                    break;
+                case "move":
+                    // Here, you can let the player choose which area to move to, and then change the currentArea accordingly.
+                    // For example:
+                    moveArea();
                     break;
                 case "exit":
                     System.exit(0);
@@ -83,6 +95,41 @@ public class Game {
                 default:
                     System.out.println("Invalid command. Please try again.");
             }
+        }
+    }
+
+    private void moveArea() {
+        // Example logic to move to a different area.
+        // You should replace this with the actual logic based on your game design.
+        if (areas.isEmpty()) {
+            System.out.println("There are no other areas to move to.");
+            return;
+        }
+
+        System.out.println("Available areas to move to:");
+        for (int i = 0; i < areas.size(); i++) {
+            if (!areas.get(i).equals(currentArea)) // Don’t list the current area as an option to move to.
+                System.out.println("[" + i + "] " + areas.get(i).name);
+        }
+
+        System.out.print("Select area number to move to, or type 'back' to go back: ");
+        while (true) {
+            String areaInput = scanner.nextLine();
+            if ("back".equalsIgnoreCase(areaInput.trim())) {
+                break;
+            }
+            try {
+                int selectedIndex = Integer.parseInt(areaInput);
+                if (selectedIndex < 0 || selectedIndex >= areas.size() || areas.get(selectedIndex).equals(currentArea)) {
+                    System.out.println("Invalid choice. Please select a valid area number or type 'back' to go back.");
+                } else {
+                    currentArea = areas.get(selectedIndex);
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a number corresponding to the area or type 'back' to go back.");
+            }
+            System.out.print("Select area number to move to, or type 'back' to go back: ");
         }
     }
 
