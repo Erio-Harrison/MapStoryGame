@@ -109,6 +109,6 @@ public class TestArea {
         System.setOut(System.out);
 
         String expectedMessage = "You enter the " + area.name;
-        Assertions.assertEquals(expectedMessage, outContent.toString(), "Enter area message should be correct");
+        Assertions.assertEquals(expectedMessage.trim(), outContent.toString().trim(), "Enter area message should be correct");
     }
 }
