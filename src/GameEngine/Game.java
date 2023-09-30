@@ -50,10 +50,18 @@ public class Game {
         this.currentArea = startingArea;
     }
 
+    private String readInputWithDefault() {
+        try {
+            return scanner.nextLine();
+        } catch (NoSuchElementException e) {
+            return "exit";
+        }
+    }
+
     public void performAction() {
         while (true) {
             System.out.print("Type 'inspect' to inspect backpack, 'talk' to talk to NPC,\n 'move' to move to another area, or 'exit' to exit: ");
-            String input = scanner.nextLine();
+            String input = readInputWithDefault(); // Use the new method here
             switch (input.trim().toLowerCase()) {
                 case "inspect":
                     player.inspectBackpack();

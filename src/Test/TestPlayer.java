@@ -1,10 +1,13 @@
+import GameEngine.Game;
 import GameEngine.Item;
 import GameEngine.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,22 +52,41 @@ public class TestPlayer {
         Assertions.assertEquals(MaxHP, player.MaxHP, "Player MaxHP should be equal to assigned MaxHP");
     }
 
-    /*
     @Test
-    public void testInspectBackpack() {
-        // Capture the standard output
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+    public void testInspectEmptyBackpack() {
+        Map<Item, Integer> backpack = new HashMap<>();
+        Player player = new Player(100, 100, backpack);
 
-        // Call the method
+        // Redirect System.in to provide "exit" as input
+        InputStream originalSystemIn = System.in;
+        ByteArrayInputStream inContent = new ByteArrayInputStream("exit\n".getBytes());
+        System.setIn(inContent);
+
         player.inspectBackpack();
 
-        // Reset the standard output
-        System.setOut(System.out);
-
-        String expectedOutput = "Item: " + testItem1.ID + ", Quantity: 2\\n" +
-                "Item: " + testItem2.ID + ", Quantity: 3\\n";
-        Assertions.assertEquals(expectedOutput, outContent.toString(), "Inspect backpack should list all items correctly");
+        // Restore original System.in
+        System.setIn(originalSystemIn);
     }
-     */
+
+    @Test
+    public void testInspectBackpackWithItems() {
+        Item apple = new Item("Apple001", "A tasty apple", null);
+        Item sword = new Item("Sword001", "A shiny sword", null);
+
+        Map<Item, Integer> backpack = new HashMap<>();
+        backpack.put(apple, 2);
+        backpack.put(sword, 1);
+
+        Player player = new Player(100, 100, backpack);
+
+        InputStream originalSystemIn = System.in;
+        ByteArrayInputStream inContent = new ByteArrayInputStream("exit\n".getBytes());
+        System.setIn(inContent);
+
+        player.inspectBackpack();
+
+        System.setIn(originalSystemIn);
+    }
+
+
 }
