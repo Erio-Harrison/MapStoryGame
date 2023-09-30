@@ -46,8 +46,12 @@ class Choice extends Action {
             count++;
             System.out.println("[" + count + "] " + s);
         }
-        System.out.print("Select choice (enter a number between 1 and " + count + "): ");
+        System.out.print("Select choice (enter a number between 1 and " + count + ", or 'b' to inspect backpack): ");
         String choice = this.game.scanner.nextLine();
+        if (choice.equals("b")) {
+            this.game.player.inspectBackpack();
+            return;
+        }
         int n_choice = Integer.parseInt(choice) - 1;
 
         // do the corresponding choice
@@ -91,7 +95,7 @@ class DoNothing extends Action {
 
 
 /**
- * List of actions
+ * Win
  */
 class Win extends Action {
     public Win(Game game) {
@@ -102,6 +106,22 @@ class Win extends Action {
     public void doAction() {
         System.out.println("you win!");
         System.exit(0);
+    }
+}
+
+/**
+ * Interact with an NPC
+ */
+class NPCInteract extends Action {
+    NPC to_interact;
+    public NPCInteract(Game game, NPC npc) {
+        super(game);
+        to_interact = npc;
+    }
+
+    @Override
+    public void doAction() {
+        this.to_interact.interact();
     }
 }
 
@@ -540,7 +560,7 @@ class ItemInBackpackCheck extends RequirementChecker {
         for (Item item : this.items_to_check.keySet()) {
             if (!game.player.backpack.containsKey(item)) {
                 return false;
-            } if (game.player.backpack.get(item) <= this.items_to_check.get(item)) {
+            } if (game.player.backpack.get(item) < this.items_to_check.get(item)) {
                 return false;
             }
         }

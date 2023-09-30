@@ -173,6 +173,10 @@
                             { "type": "say", "say": "You open the door and walk in" },
                             { "type": "change_area", "area": "start_room" }
                         ]
+                    },
+                    "tak to mr mysterious": {
+                        "type": "npc_interact",
+                        "npc": "Mr Mysterious"
                     }
                 }
             },

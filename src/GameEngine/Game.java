@@ -143,7 +143,7 @@ public class Game {
     public void runGame() {
         while (currentArea != null) {
             currentArea.enterArea();
-            performAction();
+            //performAction();
         }
     }
 }
