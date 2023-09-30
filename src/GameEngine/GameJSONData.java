@@ -460,7 +460,7 @@ public class GameJSONData {
             }
 
             GameEngine.RequirementChecker req_check = this.requirement.generateRequirement(G, jsonGame);
-            return new GameEngine.Requirement(G, req_check, satisfied, not_satisfied);
+            return new GameEngine.Requirement(G, req_check, satisfied, not_satisfied, choice_visible_if_requirement_not_met);
         }
     }
     /**
