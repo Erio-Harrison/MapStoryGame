@@ -27,6 +27,7 @@ public class GameJSONData {
 
         public Map<String, GameEngine.Area> areaMap;
         public Map<String, GameEngine.Item> itemMap;
+        public Map<String, GameEngine.NPC> npcMap;
 
         /**
          * Retrieves the area object associated with the given id string.
@@ -43,13 +44,30 @@ public class GameJSONData {
                 // otherwise generate area and use
                 for (Area area : this.areas) {
                     if (area.id.equals(id_str)) {
-                        // generate area
-                        GameEngine.Area genArea = area.generateArea(this.genGame, this);
-                        return genArea;
+                        // generate area (map is updated within generateArea)
+                        return area.generateArea(this.genGame, this);
                     }
                 }
             }
             throw new Error("Cannot find area: " + id_str);
+        }
+
+        public GameEngine.NPC retrieveNPC(String id_str, GameEngine.Game G, Game jsonGame) {
+            if (this.npcMap.containsKey(id_str)) {
+                // if in npc map, use area
+                return this.npcMap.get(id_str);
+            } else {
+                // otherwise find area with NPC and generate area
+                for (Area area : this.areas) {
+                    if (area.npcs == null) continue;
+                    for (NPC npc : area.npcs) {
+                        GameEngine.NPC genNPC = npc.generateNPC(G, jsonGame);
+                        npcMap.put(id_str, genNPC);
+                        return genNPC;
+                    }
+                }
+            }
+            throw new Error("Cannot find npc: " + id_str);
         }
 
         /**
@@ -83,6 +101,7 @@ public class GameJSONData {
             this.genGame = new GameEngine.Game(null, null, null, null);
             this.areaMap = new HashMap<>();
             this.itemMap = new HashMap<>();
+            this.npcMap = new HashMap<>();
 
             // Generate all items
             ArrayList<GameEngine.Item> items = new ArrayList<>();
@@ -391,6 +410,25 @@ public class GameJSONData {
 
     }
     /**
+     * Interact with an NPC.
+     * This action is used when the player interacts with an npc.
+     */
+    public static class NPCInteract extends Action {
+        @Expose
+        public String npc;
+        /**
+         * Generates a corresponding GameEngine.NPCInteract from this interact action.
+         *
+         * @param G The game instance associated with this Win action.
+         * @param jsonGame The JSON game data associated with this Win action.
+         * @return A new GameEngine.Win instance.
+         */
+        @Override
+        public GameEngine.Action generateAction(GameEngine.Game G, Game jsonGame) {
+            return new GameEngine.NPCInteract(G, jsonGame.retrieveNPC(this.npc, G, jsonGame));
+        }
+    }
+    /**
      * Represents a requirement action in the game.
      * This action is used to check a requirement and determine the next action based on whether the requirement is met or not.
      */
@@ -464,6 +502,8 @@ public class GameJSONData {
                     return context.deserialize(jsonObject, AddToBackpack.class);
                 case "requirement":
                     return context.deserialize(jsonObject, Requirement.class);
+                case "npc_interact":
+                    return context.deserialize(jsonObject, NPCInteract.class);
                 default:
                     throw new JsonParseException("Unknown action type: " + type);
             }
