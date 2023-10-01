@@ -26,10 +26,20 @@ public class NPC extends Character {
     public Action repeatInteraction;
 
     /**
+     * The action to be executed on NPC death
+     */
+    public Action on_death;
+
+    /**
      * A flag indicating whether the player has had the initial interaction
      * with the NPC.
      */
     public Boolean hasSpokenTo;
+
+    /**
+     * Flag that is true if NPC is alive
+     */
+    public Boolean isAlive;
 
     /**
      * Allows interaction with the NPC.
@@ -54,11 +64,54 @@ public class NPC extends Character {
      * @param initialInteraction the action for the initial interaction with the NPC
      * @param repeatInteraction the action for subsequent interactions with the NPC
      */
-    public NPC(int HP, int MaxHP, String name, Action initialInteraction, Action repeatInteraction) {
+    public NPC(int HP, int MaxHP, String name, Action initialInteraction, Action repeatInteraction, Action on_death) {
         super(HP, MaxHP);
         this.hasSpokenTo = false;
+        this.isAlive = true;
         this.name = name;
         this.initialInteraction = initialInteraction;
         this.repeatInteraction = repeatInteraction;
+        this.on_death = on_death;
+    }
+
+    /**
+     * Do damage to npc.
+     * HP is stored in this.HP
+     * On death, call this.on_death.doAction()
+     *
+     */
+    public void attack_npc(int damage) {
+        System.out.println(Utils.surroundWithLines("You deal " + damage + " damage to " + this.name + "!"));
+        this.HP -= damage;
+        if (this.HP <= 0) {
+            this.HP = 0;
+            this.isAlive = false;
+            this.on_death.doAction();
+        }
+        this.show_stats();
+    }
+
+    /**
+     * Show NPC details
+     */
+    public void show_stats() {
+        System.out.println("+");
+        System.out.println("| " + this.name + " stats:");
+
+        if (!this.isAlive) {
+            String ded = """
+                    |    _____ \s
+                    |  /       \\
+                    | |   RIP   |
+                    |  \\       /
+                    |   \\     /
+                    |    \\___/""";
+            System.out.println("| " + this.name + " is dead!");
+            System.out.println(ded);
+        } else {
+            double perc_hp = ((double) this.HP / (double) this.MaxHP) * 100;
+            System.out.println("| HP: " + this.HP + "/" + this.MaxHP + " (" + perc_hp + "%)");
+        }
+        System.out.println("+");
     }
 }

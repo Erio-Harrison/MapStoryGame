@@ -15,15 +15,21 @@ public class Player extends Character {
     public Map<Item, Integer> backpack;
 
     /**
+     * Action to occur on player death
+     */
+    public Action on_death;
+
+    /**
      * Constructs a new Player instance with the specified HP, MaxHP, and backpack.
      *
      * @param HP the current hit points (health) of the player
      * @param MaxHP the maximum hit points (health) the player can have
      * @param backpack a map representing the initial items in the player's backpack
      */
-    public Player(int HP, int MaxHP, Map<Item, Integer> backpack) {
+    public Player(int HP, int MaxHP, Map<Item, Integer> backpack, Action on_death) {
         super(HP, MaxHP);
         this.backpack = backpack;
+        this.on_death = on_death;
     }
 
     /**
@@ -35,7 +41,19 @@ public class Player extends Character {
 
         System.out.println("| Player stats:");
 
-        int perc_hp = (this.HP / this.MaxHP) * 100;
+        if (this.HP <= 0) {
+            String ded = """
+                    |    _____ \s
+                    |  /       \\
+                    | |   RIP   |
+                    |  \\       /
+                    |   \\     /
+                    |    \\___/""";
+            System.out.println("| You are dead");
+            System.out.println(ded);
+        }
+
+        double perc_hp = ((double) this.HP / (double) this.MaxHP) * 100;
         System.out.println("| HP: " + this.HP + "/" + this.MaxHP + " (" + perc_hp + "%)");
 
         String items = "| Backpack contains: ";

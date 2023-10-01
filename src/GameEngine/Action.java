@@ -131,6 +131,25 @@ class DoNothing extends Action {
     }
 }
 
+/**
+ * Attack NPC
+ */
+class AttackNPC extends Action {
+    NPC npc;
+    int damage;
+
+    public AttackNPC(Game game, NPC npc, int damage) {
+        super(game);
+        this.npc = npc;
+        this.damage = damage;
+    }
+
+    @Override
+    public void doAction() {
+        npc.attack_npc(this.damage);
+    }
+}
+
 
 /**
  * Win
@@ -142,10 +161,26 @@ class Win extends Action {
 
     @Override
     public void doAction() {
-        System.out.println("you win!");
+        System.out.println("You win! Congratulations!");
         System.exit(0);
     }
 }
+
+/**
+ * Lose
+ */
+class Lose extends Action {
+    public Lose(Game game) {
+        super(game);
+    }
+
+    @Override
+    public void doAction() {
+        System.out.println("You lost the game :(");
+        System.exit(0);
+    }
+}
+
 
 /**
  * Interact with an NPC
@@ -533,10 +568,11 @@ class Hurt extends Action {
     public void doAction() {
         Player player = game.getPlayer();
         player.HP -= damage;
-        if (player.HP < 0) {
+        if (player.HP <= 0) {
             player.HP = 0;
-            System.out.println("You died :(");
-            System.exit(0);
+            System.out.println(Utils.surroundWithLines("You died!"));
+            this.game.player.printPlayerInfo();
+            this.game.player.on_death.doAction();
         }
     }
 }
@@ -662,5 +698,22 @@ class ItemInAreaCheck extends RequirementChecker {
             }
         }
         return true;
+    }
+}
+
+/**
+ * Check NPC alive
+ */
+class NPCAliveCheck extends RequirementChecker {
+    NPC npc;
+
+    public NPCAliveCheck(Game game, NPC npc) {
+        this.game = game;
+        this.npc = npc;
+    }
+
+    @Override
+    Boolean checkRequirement() {
+        return this.npc.isAlive;
     }
 }

@@ -24,12 +24,12 @@ public class TestPlayer {
         Map<Item, Integer> backpack = new HashMap<>();
         backpack.put(testItem1, 2);
         backpack.put(testItem2, 3);
-        player = new Player(100, 100, backpack);
+        player = new Player(100, 100, backpack, null);
     }
     @Test
     public void testPlayerInitialization() {
         Map<GameEngine.Item, Integer> backpack = new HashMap<>();
-        GameEngine.Player player = new GameEngine.Player(100, 100, backpack);
+        GameEngine.Player player = new GameEngine.Player(100, 100, backpack, null);
         Assertions.assertNotNull(player, "Player object should not be null");
     }
 
@@ -38,7 +38,7 @@ public class TestPlayer {
         Map<GameEngine.Item, Integer> backpack = new HashMap<>();
         GameEngine.Item item = new GameEngine.Item("id", "description", null);
         backpack.put(item, 1);
-        GameEngine.Player player = new GameEngine.Player(100, 100, backpack);
+        GameEngine.Player player = new GameEngine.Player(100, 100, backpack, null);
         Assertions.assertEquals(backpack, player.backpack, "Player backpack items should be equal to assigned items");
     }
 
@@ -47,7 +47,7 @@ public class TestPlayer {
         int HP = 80;
         int MaxHP = 100;
         Map<GameEngine.Item, Integer> backpack = new HashMap<>();
-        GameEngine.Player player = new GameEngine.Player(HP, MaxHP, backpack);
+        GameEngine.Player player = new GameEngine.Player(HP, MaxHP, backpack, null);
         Assertions.assertEquals(HP, player.HP, "Player HP should be equal to assigned HP");
         Assertions.assertEquals(MaxHP, player.MaxHP, "Player MaxHP should be equal to assigned MaxHP");
     }
@@ -55,7 +55,7 @@ public class TestPlayer {
     @Test
     public void testInspectEmptyBackpack() {
         Map<Item, Integer> backpack = new HashMap<>();
-        Player player = new Player(100, 100, backpack);
+        Player player = new Player(100, 100, backpack, null);
 
         // Redirect System.in to provide "exit" as input
         InputStream originalSystemIn = System.in;
@@ -77,7 +77,7 @@ public class TestPlayer {
         backpack.put(apple, 2);
         backpack.put(sword, 1);
 
-        Player player = new Player(100, 100, backpack);
+        Player player = new Player(100, 100, backpack, null);
 
         InputStream originalSystemIn = System.in;
         ByteArrayInputStream inContent = new ByteArrayInputStream("exit\n".getBytes());

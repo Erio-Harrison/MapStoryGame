@@ -57,13 +57,12 @@ public class GameJSONData {
                 // if in npc map, use area
                 return this.npcMap.get(id_str);
             } else {
-                // otherwise find area with NPC and generate area
+                // otherwise find area with NPC and generate npc
                 for (Area area : this.areas) {
                     if (area.npcs == null) continue;
                     for (NPC npc : area.npcs) {
-                        GameEngine.NPC genNPC = npc.generateNPC(G, jsonGame);
-                        npcMap.put(id_str, genNPC);
-                        return genNPC;
+                        // generate area (map is updated within generateNPC)
+                        return npc.generateNPC(G, jsonGame);
                     }
                 }
             }
@@ -408,6 +407,23 @@ public class GameJSONData {
         public GameEngine.Action generateAction(GameEngine.Game G, Game jsonGame) {
             return new GameEngine.Win(G);
         }
+    }
+    /**
+     * Represents a lose action in the game.
+     * This action is used when the player loses the game
+     */
+    public static class Lose extends Action {
+        /**
+         * Generates a corresponding GameEngine.Lose from this Win action.
+         *
+         * @param G The game instance associated with this Win action.
+         * @param jsonGame The JSON game data associated with this Win action.
+         * @return A new GameEngine.Lose instance.
+         */
+        @Override
+        public GameEngine.Action generateAction(GameEngine.Game G, Game jsonGame) {
+            return new GameEngine.Lose(G);
+        }
 
     }
     /**
@@ -422,11 +438,33 @@ public class GameJSONData {
          *
          * @param G The game instance associated with this Win action.
          * @param jsonGame The JSON game data associated with this Win action.
-         * @return A new GameEngine.Win instance.
+         * @return A new GameEngine.NPCInteract instance.
          */
         @Override
         public GameEngine.Action generateAction(GameEngine.Game G, Game jsonGame) {
             return new GameEngine.NPCInteract(G, jsonGame.retrieveNPC(this.npc, G, jsonGame));
+        }
+    }
+    /**
+     * Attack an NPC.
+     * This action is used to attack an NPC
+     */
+    public static class AttackNPC extends Action {
+        @Expose
+        public String npc;
+        @Expose
+        public int damage;
+        /**
+         * Generates a corresponding GameEngine.AttackNPC from this interact action.
+         *
+         * @param G The game instance associated with this Win action.
+         * @param jsonGame The JSON game data associated with this Win action.
+         * @return A new GameEngine.AttackNPC instance.
+         */
+        @Override
+        public GameEngine.Action generateAction(GameEngine.Game G, Game jsonGame) {
+            GameEngine.NPC genNPC = jsonGame.retrieveNPC(this.npc, G, jsonGame);
+            return new GameEngine.AttackNPC(G, genNPC, this.damage);
         }
     }
     /**
@@ -491,6 +529,8 @@ public class GameJSONData {
                     return context.deserialize(jsonObject, Heal.class);
                 case "win":
                     return context.deserialize(jsonObject, Win.class);
+                case "lose":
+                    return context.deserialize(jsonObject, Lose.class);
                 case "change_area":
                     return context.deserialize(jsonObject, ChangeArea.class);
                 case "remove_item_from_area":
@@ -505,6 +545,8 @@ public class GameJSONData {
                     return context.deserialize(jsonObject, Requirement.class);
                 case "npc_interact":
                     return context.deserialize(jsonObject, NPCInteract.class);
+                case "attack_npc":
+                    return context.deserialize(jsonObject, AttackNPC.class);
                 default:
                     throw new JsonParseException("Unknown action type: " + type);
             }
@@ -588,6 +630,28 @@ public class GameJSONData {
     }
 
     /**
+     * Represents a requirement checker that checks if an NPC is alive
+     * This class is used to validate if certain conditions are met in the game, based on if a certain NPC is alive or not
+     */
+    public static class NPCAliveCheck extends RequirementChecker {
+        @Expose
+        public String npc;
+
+        /**
+         * Generates a corresponding GameEngine.NPCAliveCheck from this ItemInBackpackCheck.
+         *
+         * @param G The game instance associated with this ItemInBackpackCheck.
+         * @param jsonGame The JSON game data associated with this ItemInBackpackCheck.
+         * @return A new GameEngine.NPCAliveCheck instance that can be used to check game requirements.
+         */
+        @Override
+        public GameEngine.RequirementChecker generateRequirement(GameEngine.Game G, Game jsonGame) {
+            GameEngine.NPC genNPC = jsonGame.retrieveNPC(this.npc, G, jsonGame);
+            return new GameEngine.NPCAliveCheck(G, genNPC);
+        }
+    }
+
+    /**
      * Deserializer for RequirementChecker, used to deserialize JSON representations of RequirementChecker objects.
      * The deserializer reads the 'type' attribute from the JSON object to determine the specific type of RequirementChecker to instantiate.
      */
@@ -612,6 +676,8 @@ public class GameJSONData {
                     return context.deserialize(jsonObject, ItemInBackpackCheck.class);
                 case "area_contains_at_least":
                     return context.deserialize(jsonObject, ItemInAreaCheck.class);
+                case "npc_alive":
+                    return context.deserialize(jsonObject, NPCAliveCheck.class);
                 default:
                     throw new JsonParseException("Unknown requirement type: " + type);
             }
@@ -659,7 +725,7 @@ public class GameJSONData {
             ArrayList<GameEngine.NPC> NPCs = new ArrayList<>();
             if (this.npcs != null) {
                 for (NPC npc : this.npcs) {
-                    NPCs.add(npc.generateNPC(G, jsonGame));
+                    NPCs.add(jsonGame.retrieveNPC(npc.name, G, jsonGame));
                 }
             }
 
@@ -721,6 +787,8 @@ public class GameJSONData {
         public Action initial_interaction;
         @Expose
         public Action repeat_interaction;
+        @Expose
+        public Action on_death;
 
         /**
          * Generates and sets up a new NPC with interactions.
@@ -730,9 +798,25 @@ public class GameJSONData {
          * @return The newly generated GameEngine.NPC instance.
          */
         public GameEngine.NPC generateNPC(GameEngine.Game G, Game jsonGame) {
+            // store in cache
+            GameEngine.NPC genNPC = new GameEngine.NPC(0, 0, null, null, null, null);
+            jsonGame.npcMap.put(this.name, genNPC);
+
             GameEngine.Action initial = this.initial_interaction.generateAction(G, jsonGame);
             GameEngine.Action repeat = this.repeat_interaction.generateAction(G, jsonGame);
-            return new GameEngine.NPC(starting_health, max_health, this.name, initial, repeat);
+            GameEngine.Action death = this.on_death.generateAction(G, jsonGame);
+
+            // setup NPC
+            genNPC.HP = starting_health;
+            genNPC.MaxHP = max_health;
+            genNPC.hasSpokenTo = false;
+            genNPC.isAlive = true;
+            genNPC.name = this.name;
+            genNPC.initialInteraction = initial;
+            genNPC.repeatInteraction = repeat;
+            genNPC.on_death = death;
+
+            return genNPC;
         }
     }
 
@@ -747,14 +831,16 @@ public class GameJSONData {
         public int starting_health;
         @Expose
         public int max_health;
+        @Expose
+        public Action on_death;
         /**
          * Generates and sets up a new player with backpack items.
          *
-         * @param game The GameEngine.Game instance associated with the player.
+         * @param G The GameEngine.Game instance associated with the player.
          * @param jsonGame The Game instance associated with the player.
          * @return The newly generated GameEngine.Player instance.
          */
-        public GameEngine.Player generatePlayer(GameEngine.Game game, Game jsonGame) {
+        public GameEngine.Player generatePlayer(GameEngine.Game G, Game jsonGame) {
             Map<GameEngine.Item, Integer> backpack = new HashMap<>();
 
             for (String id : this.backpack.keySet()) {
@@ -762,7 +848,9 @@ public class GameJSONData {
                 backpack.put(jsonGame.retrieveItem(id), amt);
             }
 
-            return new GameEngine.Player(this.starting_health, this.max_health, backpack);
+            GameEngine.Action on_death = this.on_death.generateAction(G, jsonGame);
+
+            return new GameEngine.Player(this.starting_health, this.max_health, backpack, on_death);
         }
     }
 }
