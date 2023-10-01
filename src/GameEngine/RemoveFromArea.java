@@ -17,7 +17,14 @@ public class RemoveFromArea extends Action {
     private Area targetArea;
     private Map<Item, Integer> itemsToRemove;
 
-    // Constructor for removing an item
+    /**
+     * Constructs a new RemoveFromArea action instance associated with the specified game,
+     * target area, and items to remove.
+     *
+     * @param game          The Game instance to which this action belongs.
+     * @param itemsToRemove A map representing the items to be removed and their respective quantities.
+     * @param targetArea    The Area instance representing the target area from which items are to be removed.
+     */
     public RemoveFromArea(Game game, Map<Item, Integer> itemsToRemove, Area targetArea) {
         super(game);
         this.targetArea = targetArea;
@@ -25,7 +32,9 @@ public class RemoveFromArea extends Action {
     }
 
     /**
-     * Executes the action, removing the specified item or NPC from the target game area.
+     * Executes the action of removing the specified items from the target area.
+     * It iterates over the set of items to remove and adjusts the quantity or
+     * removes the item from the area's items as necessary.
      */
     @Override
     public void doAction() {

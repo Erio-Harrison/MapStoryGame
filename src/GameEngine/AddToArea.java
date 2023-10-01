@@ -16,7 +16,15 @@ import java.util.Map;
 public class AddToArea extends Action {
     private Map<Item, Integer> itemsToAdd;
     private Area targetArea;
-
+    /**
+     * Constructs a new AddToArea instance associated with the specified game and
+     * initializes it with items to add and the target area.
+     *
+     * @param game        The Game instance to which this action belongs.
+     * @param itemToAdd  A Map representing the items to be added to the target area,
+     *                    with each item associated with a quantity.
+     * @param targetArea  The Area instance representing the area where the items will be added.
+     */
     public AddToArea(Game game, Map<Item, Integer> itemToAdd, Area targetArea) {
         super(game);
         this.itemsToAdd = itemToAdd;
@@ -24,7 +32,9 @@ public class AddToArea extends Action {
     }
 
     /**
-     * Executes the action, adding the specified item or NPC to the target game area.
+     * Executes the AddToArea action, adding the specified items to the target game area.
+     * It iterates through the set of items and either increases the quantity of existing items
+     * in the area or introduces new items to it.
      */
     @Override
     public void doAction() {

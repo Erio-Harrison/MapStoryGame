@@ -4,16 +4,31 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * User choice
+ * The Choice class extends the Action class and represents a mechanism
+ * for presenting multiple gameplay choices to the user and executing
+ * the corresponding action based on user input. It facilitates user
+ * interaction with the game, allowing the player to make decisions
+ * that affect the game state and progress.
  */
 public class Choice extends Action {
     Map<String, Action> choices;
-
+    /**
+     * Constructs a new Choice action instance associated with the specified game
+     * and a set of possible actions represented by a map of strings and corresponding actions.
+     *
+     * @param game    The Game instance to which this action belongs.
+     * @param choices A Map containing string representations and corresponding Action instances representing the choices available to the user.
+     */
     public Choice(Game game, Map<String, Action> choices) {
         super(game);
         this.choices = choices;
     }
-
+    /**
+     * Executes the Choice action. It displays a list of available choices to the user
+     * and prompts the user to make a selection. The method then executes the corresponding
+     * action based on the user's choice and handles invalid inputs and special commands
+     * such as opening the backpack or exiting the game.
+     */
     @Override
     public void doAction() {
         int count = 0;
