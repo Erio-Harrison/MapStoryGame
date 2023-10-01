@@ -1,6 +1,6 @@
 1. As a player, I want to move forward, backward, left, and right so that I can navigate the area and interact with NPCs
 1. As a player, I want to be able to interact with non-player characters (NPCs), so that I can progress through the storyline.
-1. As a player, I want to have a combat system, so that I can engage in battle with enemies and gain experience points.
+1. As a player, I want to have a combat system, so that I can engage in battle with NPCs and gain items.
 1. As a player, I want to read the instructions on features before playing games so that I can play the game without getting lost.
 1. As a player, I want to pick up and store the item in inventory so that I can use them later.
 1. As a player, I want to be able to view my inventory so that I know I have the items I collected.
@@ -17,4 +17,4 @@
 1. As a developer, I want to track issues using Gitlab issue boards and labels so taht as a development team, we can split and priortize effectively.
 1. As a developer, we want to use trunk-based development so that we only need to maintain one branch instead of several feature branches.
 1. As a user, I want to read instructions on installing the game in the GitLab Wiki so that I can easily download and run the game.
-1. As a user, I want to know the license of the game so that i know what I am allowed to do with the game materials.
+1. As a user, I want to know the license of the game so that I know what I am allowed to do with the game materials.
