@@ -22,7 +22,8 @@ public class TestNPC {
     public void testNPCInitialization() {
         TestAction initialInteraction = new TestAction();
         TestAction repeatInteraction = new TestAction();
-        NPC npc = new NPC(100, 100, "Test NPC", initialInteraction, repeatInteraction);
+        TestAction deathInteraction = new TestAction();
+        NPC npc = new NPC(100, 100, "Test NPC", initialInteraction, repeatInteraction, deathInteraction);
 
         Assertions.assertNotNull(npc, "NPC object should not be null");
         Assertions.assertEquals("Test NPC", npc.name, "NPC name should be initialized correctly");
@@ -33,7 +34,8 @@ public class TestNPC {
     public void testNPCInteractions() {
         TestAction initialInteraction = new TestAction();
         TestAction repeatInteraction = new TestAction();
-        NPC npc = new NPC(100, 100, "Test NPC", initialInteraction, repeatInteraction);
+        TestAction deathInteraction = new TestAction();
+        NPC npc = new NPC(100, 100, "Test NPC", initialInteraction, repeatInteraction, deathInteraction);
 
         // Interact for the first time
         npc.interact();
@@ -53,13 +55,13 @@ public class TestNPC {
 
     @Test
     public void testNPCHealth() {
-        NPC npc = new NPC( 50, 100, "TestNPC", null, null);
+        NPC npc = new NPC( 50, 100, "TestNPC", null, null, null);
         Assertions.assertEquals(50, npc.HP, "NPC health should be initialized correctly");
     }
 
     @Test
     public void testNPCMaxHealth() {
-        NPC npc = new NPC( 50, 100, "TestNPC", null, null);
+        NPC npc = new NPC( 50, 100, "TestNPC", null, null, null);
         Assertions.assertEquals(100, npc.MaxHP, "NPC max health should be initialized correctly");
     }
 }

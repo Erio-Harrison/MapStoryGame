@@ -5,7 +5,8 @@
         "backpack": {
             "bandaid": 1,
             "toothpick": 2
-        }
+        },
+        "on_death": { "type": "lose" }
     },
     "items": [
         {
@@ -199,8 +200,16 @@
                         ]
                     },
                     "tak to mr mysterious": {
-                        "type": "npc_interact",
-                        "npc": "Mr Mysterious"
+                        "type": "requirement",
+                        "choice_visible_if_requirement_not_met": false,
+                        "requirement": {
+                            "type": "npc_alive",
+                            "npc": "Mr Mysterious"
+                        },
+                        "req_satisfied": {
+                            "type": "npc_interact",
+                            "npc": "Mr Mysterious"
+                        }
                     }
                 }
             },
@@ -208,6 +217,9 @@
             "npcs": [ 
                 {
                     "name": "Mr Mysterious",
+                    "starting_health": 20,
+                    "max_health": 1000,
+                    "on_death": { "type": "say", "say": "You defeat Mr Mysterious :( " },
                     "initial_interaction": {
                         "type": "choices",
                         "choices": {
@@ -233,13 +245,32 @@
                             "tell him to get lost": {
                                 "type": "action_list",
                                 "actions": [
-                                    { "type": "say", "say": "You speak rudely to Mr Mysterious for no reason. He beats you up, as he should" },
-                                    { "type": "hurt", "hurt": 50 }
+                                    { "type": "say", "say": "You speak rudely to Mr Mysterious for no reason. He beats you up, as he should!" },
+                                    { "type": "hurt", "hurt": 50 },
+                                    { "type": "say", "say": "You try and strike Mr Mysterious for this aggravation!" },
+                                    { "type": "attack_npc", "npc": "Mr Mysterious",  "damage": 10 }
                                 ]
                             }
                         }
                     },
-                    "repeat_interaction": {"type": "say", "say": "You try to continue talking to Mr Mysterious. He simply looks at you mysteriously." }
+                    "repeat_interaction": {
+                        "type": "choices",
+                        "choices": {
+                            "say hello": { "type": "say", "say": "Mr Mysterious looks at you mysteriously" },
+                            "hit mr Mysterious": { 
+                                "type": "action_list",
+                                "actions": [
+                                    { "type": "attack_npc", "npc": "Mr Mysterious",  "damage": 10 }
+                                ]
+                            },
+                            "get hit by mr Mysterious": { 
+                                "type": "action_list",
+                                "actions": [
+                                    { "type": "hurt", "hurt": 50 }
+                                ]
+                            }
+                        }
+                    }
                 }
             ]
         }

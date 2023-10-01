@@ -33,13 +33,13 @@ public class TestGame {
         areas.add(testArea1);
         areas.add(testArea2);
         ArrayList<Item> items = new ArrayList<>();
-        player = new Player(100, 100, null);
+        player = new Player(100, 100, null, null);
         game = new Game(player, areas, items, testArea1);
     }
     @Test
     public void testGameInitialization() {
         // Arrange
-        Player player = new Player(100, 200, new HashMap<>()); // Initialize as necessary
+        Player player = new Player(100, 200, new HashMap<>(), null); // Initialize as necessary
         ArrayList<Area> areas = new ArrayList<>();
         Area startingArea = new Area("Starting Area", new ArrayList<>(), new HashMap<>(), null); // Initialize as necessary
         areas.add(startingArea);
