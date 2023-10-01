@@ -110,12 +110,23 @@
                         "req_not_satisfied": { "type": "say", "say": "Hmmm. Is there a note somewhere around?" }
                     },
                     "pick up starting note": {
-                        "type": "action_list",
-                        "actions": [
-                            { "type": "say", "say": "You put the note into your backpack" },
-                            { "type": "add_item_to_backpack", "to_add": { "starting_note": 1 } },
-                            { "type": "remove_item_from_area", "area": "start_room", "to_remove": { "starting_note": 1 } }
-                        ]
+                        "type": "requirement",
+                        "choice_visible_if_requirement_not_met": false,
+                        "requirement": {
+                            "type": "area_contains_at_least",
+                            "area": "start_room",
+                            "items": {
+                                "starting_note": 1
+                            }
+                        },
+                        "req_satisfied": {
+                            "type": "action_list",
+                            "actions": [
+                                { "type": "say", "say": "You put the note into your backpack" },
+                                { "type": "add_item_to_backpack", "to_add": { "starting_note": 1 } },
+                                { "type": "remove_item_from_area", "area": "start_room", "to_remove": { "starting_note": 1 } }
+                            ]
+                        }
                     },
                     "put gnome in the fire": {
                         "type": "requirement",
@@ -160,12 +171,23 @@
                 "type": "choices",
                 "choices": {
                     "pick up gnome": {
-                        "type": "action_list",
-                        "actions": [
-                            { "type": "say", "say": "You put the gnome into your backpack. It's rather unwieldy." },
-                            { "type": "add_item_to_backpack", "to_add": { "garden_gnome": 1 } },
-                            { "type": "remove_item_from_area", "area": "outside_house",  "to_remove": { "garden_gnome": 1 } }
-                        ]
+                        "type": "requirement",
+                        "choice_visible_if_requirement_not_met": false,
+                        "requirement": {
+                            "type": "area_contains_at_least",
+                            "area": "outside_house",
+                            "items": {
+                                "garden_gnome": 1
+                            }
+                        },
+                        "req_satisfied": {
+                            "type": "action_list",
+                            "actions": [
+                                { "type": "say", "say": "You put the gnome into your backpack. It's rather unwieldy." },
+                                { "type": "add_item_to_backpack", "to_add": { "garden_gnome": 1 } },
+                                { "type": "remove_item_from_area", "area": "outside_house",  "to_remove": { "garden_gnome": 1 } }
+                            ]
+                        }
                     },
                     "go forward": {
                         "type": "action_list",
@@ -173,6 +195,10 @@
                             { "type": "say", "say": "You open the door and walk in" },
                             { "type": "change_area", "area": "start_room" }
                         ]
+                    },
+                    "tak to mr mysterious": {
+                        "type": "npc_interact",
+                        "npc": "Mr Mysterious"
                     }
                 }
             },

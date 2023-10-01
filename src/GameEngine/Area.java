@@ -39,5 +39,13 @@ public class Area {
         System.out.println("You enter the " + this.name);
         this.action.doAction();
     }
+    /**
+     * Gets all NPCs in the area
+     *
+     * @return A list of NPCs in the area
+     */
+    public List<NPC> getNPCs() {
+        return NPCs;
+    }
 
 }

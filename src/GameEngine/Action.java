@@ -41,13 +41,35 @@ class Choice extends Action {
     public void doAction() {
         int count = 0;
 
-        ArrayList<String> choice_strings = new ArrayList<>(this.choices.keySet());
+        ArrayList<String> choice_strings = new ArrayList<>();
+
+        for (String s : this.choices.keySet()) {
+            Action a = this.choices.get(s);
+
+            if (a instanceof Requirement) {
+                // do not add requirement to choice if not satisfied
+                if (((Requirement) a).is_visible_if_not_satisfied) {
+                    choice_strings.add(s);
+                } else {
+                    if (((Requirement) a).check.checkRequirement()) {
+                      choice_strings.add(s);
+                    }
+                }
+            } else {
+                choice_strings.add(s);
+            }
+        }
+
         for (String s : choice_strings) {
             count++;
             System.out.println("[" + count + "] " + s);
         }
-        System.out.print("Select choice (enter a number between 1 and " + count + "): ");
+        System.out.print("Select choice (enter a number between 1 and " + count + ", or 'b' to inspect backpack): ");
         String choice = this.game.scanner.nextLine();
+        if (choice.equals("b")) {
+            this.game.player.inspectBackpack();
+            return;
+        }
         int n_choice = Integer.parseInt(choice) - 1;
 
         // do the corresponding choice
@@ -91,7 +113,7 @@ class DoNothing extends Action {
 
 
 /**
- * List of actions
+ * Win
  */
 class Win extends Action {
     public Win(Game game) {
@@ -102,6 +124,22 @@ class Win extends Action {
     public void doAction() {
         System.out.println("you win!");
         System.exit(0);
+    }
+}
+
+/**
+ * Interact with an NPC
+ */
+class NPCInteract extends Action {
+    NPC to_interact;
+    public NPCInteract(Game game, NPC npc) {
+        super(game);
+        to_interact = npc;
+    }
+
+    @Override
+    public void doAction() {
+        this.to_interact.interact();
     }
 }
 
@@ -199,7 +237,7 @@ class AddToBackpack extends Action {
      * Constructs a new {@code AddToBackpack} action.
      *
      * @param game the current game instance
-     * @param item the item to be added to the player's inventory
+     * @param itemsToAdd the item to be added to the player's inventory
      */
     public AddToBackpack(Game game, Map<Item, Integer> itemsToAdd) {
         super(game);
@@ -245,8 +283,8 @@ class RemoveFromBackpack extends Action {
      * Constructs a new {@code RemoveFromBackpack} action.
      *
      * @param game the current game instance
-     * @param item the item to be removed from the player's inventory
-     * @param quantityToRemove the quantity of the item to remove
+     * @paramtem the item to be removed from the player's inventory
+     * @paramquantityToRemove the quantity of the item to remove
      */
     public RemoveFromBackpack(Game game, Map<Item, Integer> itemsToRemove) {
         super(game);
@@ -491,12 +529,14 @@ class Requirement extends Action {
     RequirementChecker check;
     Action satisfied;
     Action not_satisfied;
+    boolean is_visible_if_not_satisfied;
 
-    public Requirement(Game game, RequirementChecker check, Action satisfied, Action notSatisfied) {
+    public Requirement(Game game, RequirementChecker check, Action satisfied, Action notSatisfied, boolean is_visible) {
         super(game);
         this.check = check;
         this.satisfied = satisfied;
         this.not_satisfied = notSatisfied;
+        this.is_visible_if_not_satisfied = is_visible;
     }
 
     @Override
@@ -540,7 +580,33 @@ class ItemInBackpackCheck extends RequirementChecker {
         for (Item item : this.items_to_check.keySet()) {
             if (!game.player.backpack.containsKey(item)) {
                 return false;
-            } if (game.player.backpack.get(item) <= this.items_to_check.get(item)) {
+            } if (game.player.backpack.get(item) < this.items_to_check.get(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/**
+ * Check if item in backpack
+ */
+class ItemInAreaCheck extends RequirementChecker {
+    Map<Item, Integer> items_to_check;
+    Area area;
+
+    public ItemInAreaCheck(Game game, Map<Item, Integer> items_to_check, Area area_to_check_in) {
+        this.items_to_check= items_to_check;
+        this.area = area_to_check_in;
+        this.game = game;
+    }
+
+    @Override
+    Boolean checkRequirement() {
+        for (Item item : this.items_to_check.keySet()) {
+            if (!this.area.Items.containsKey(item)) {
+                return false;
+            } if (this.area.Items.get(item) < this.items_to_check.get(item)) {
                 return false;
             }
         }
