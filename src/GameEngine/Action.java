@@ -60,20 +60,30 @@ class Choice extends Action {
             }
         }
 
-        for (String s : choice_strings) {
-            count++;
-            System.out.println("[" + count + "] " + s);
-        }
-        System.out.print("Select choice (enter a number between 1 and " + count + ", or 'b' to inspect backpack): ");
-        String choice = this.game.scanner.nextLine();
-        if (choice.equals("b")) {
-            this.game.player.inspectBackpack();
-            return;
-        }
-        int n_choice = Integer.parseInt(choice) - 1;
-
-        // do the corresponding choice
-        this.choices.get(choice_strings.get(n_choice)).doAction();
+        do {
+            for (String s : choice_strings) {
+                count++;
+                System.out.println("[" + count + "] " + s);
+            }
+            System.out.print("Select choice (enter a number between 1 and " + count + ", or 'b' to inspect backpack): ");
+            String choice = this.game.scanner.nextLine();
+            if (choice.equals("b")) {
+                this.game.player.inspectBackpack();
+                return;
+            }
+            try {
+                int n_choice = Integer.parseInt(choice) - 1;
+                if (n_choice >= 0 && n_choice < count) {
+                    // do the corresponding choice
+                    this.choices.get(choice_strings.get(n_choice)).doAction();
+                    return; // exit the loop if a valid choice is made
+                } else {
+                    System.out.println("Invalid choice, please enter a number between 1 and " + count);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input, please enter a valid number or 'b' to inspect backpack");
+            }
+        } while (true);
     }
 }
 
@@ -565,16 +575,30 @@ abstract class RequirementChecker {
 }
 
 /**
- * Check if item in backpack
- */ 
+ * `ItemInBackpackCheck` is a class extending `RequirementChecker`. It is employed to determine whether
+ * specified items are present in a player's backpack in the requisite quantities. This class finds its application
+ * primarily in gaming scenarios where there is a need to validate certain conditions based on the items
+ * in a player’s backpack.
+ */
 class ItemInBackpackCheck extends RequirementChecker {
+    // The map representing the items along with their required quantities to check in the player's backpack.
     Map<Item, Integer> items_to_check;
-
+    /**
+     * Constructs a new instance of `ItemInBackpackCheck`.
+     *
+     * @param game           The game instance associated with this checker.
+     * @param items_to_check The map of items along with their quantities to be checked in the player's backpack.
+     */
     public ItemInBackpackCheck(Game game, Map<Item, Integer> items_to_check) {
         this.items_to_check= items_to_check;
         this.game = game;
     }
 
+    /**
+     * Validates whether all specified items are present in the player's backpack in the required quantities.
+     *
+     * @return true if all items in `items_to_check` are present in the player’s backpack in the required quantities, otherwise false.
+     */
     @Override
     Boolean checkRequirement() {
         for (Item item : this.items_to_check.keySet()) {
@@ -589,18 +613,35 @@ class ItemInBackpackCheck extends RequirementChecker {
 }
 
 /**
- * Check if item in backpack
+ * ItemInAreaCheck is a class that extends RequirementChecker
+ * and is used to verify if specified items are present in a given area in the required quantities.
+ * It is utilized in the context of a game to check whether the required conditions,
+ * based on the items in an area, are met.
  */
 class ItemInAreaCheck extends RequirementChecker {
+
+    // The map representing the items to check along with their required quantities.
     Map<Item, Integer> items_to_check;
     Area area;
 
+    /**
+     * Initializes a new instance of `ItemInAreaCheck`.
+     *
+     * @param game            The game instance associated with this checker.
+     * @param items_to_check  The map of items along with their quantities to be checked in the area.
+     * @param area_to_check_in The area in which the items should be checked.
+     */
     public ItemInAreaCheck(Game game, Map<Item, Integer> items_to_check, Area area_to_check_in) {
         this.items_to_check= items_to_check;
         this.area = area_to_check_in;
         this.game = game;
     }
 
+    /**
+     * Verifies if all specified items are present in the given area in the required quantities.
+     *
+     * @return true if all items in `items_to_check` are present in `area` in the required quantities, otherwise false.
+     */
     @Override
     Boolean checkRequirement() {
         for (Item item : this.items_to_check.keySet()) {
