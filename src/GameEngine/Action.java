@@ -47,12 +47,11 @@ class Choice extends Action {
             Action a = this.choices.get(s);
 
             if (a instanceof Requirement) {
-                // do not add requirement to choice if not satisfied
                 if (((Requirement) a).is_visible_if_not_satisfied) {
                     choice_strings.add(s);
                 } else {
                     if (((Requirement) a).check.checkRequirement()) {
-                      choice_strings.add(s);
+                        choice_strings.add(s);
                     }
                 }
             } else {
@@ -65,23 +64,34 @@ class Choice extends Action {
                 count++;
                 System.out.println("[" + count + "] " + s);
             }
-            System.out.print("Select choice (enter a number between 1 and " + count + ", or 'b' to inspect backpack): ");
+
+            // Adding an option to exit the game
+            System.out.println("[" + (count + 1) + "] Exit Game");
+
+            System.out.print("Select choice (enter a number between 1 and " + (count + 1) + ", or 'b' to inspect backpack): ");
             String choice = this.game.scanner.nextLine();
+
             if (choice.equals("b")) {
                 this.game.player.inspectBackpack();
-                return;
+                continue;
             }
+
+            // Handling the choice to exit the game
+            if (choice.equals(String.valueOf(count + 1))) {
+                System.out.println("Exiting the game. Thanks for playing!");
+                System.exit(0);
+            }
+
             try {
                 int n_choice = Integer.parseInt(choice) - 1;
                 if (n_choice >= 0 && n_choice < count) {
-                    // do the corresponding choice
                     this.choices.get(choice_strings.get(n_choice)).doAction();
-                    return; // exit the loop if a valid choice is made
+                    return;
                 } else {
-                    System.out.println("Invalid choice, please enter a number between 1 and " + count);
+                    System.out.println("Invalid choice, please enter a number between 1 and " + (count + 1));
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input, please enter a valid number or 'b' to inspect backpack");
+                System.out.println("Invalid input, please enter a valid number, 'b' to inspect backpack, or " + (count + 1) + " to exit game");
             }
         } while (true);
     }
@@ -292,9 +302,8 @@ class RemoveFromBackpack extends Action {
     /**
      * Constructs a new {@code RemoveFromBackpack} action.
      *
-     * @param game the current game instance
-     * @paramtem the item to be removed from the player's inventory
-     * @paramquantityToRemove the quantity of the item to remove
+     * @param game          the current game instance
+     * @param itemsToRemove the map containing items and their corresponding quantities to be removed from the player's inventory
      */
     public RemoveFromBackpack(Game game, Map<Item, Integer> itemsToRemove) {
         super(game);

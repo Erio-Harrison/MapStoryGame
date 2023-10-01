@@ -83,25 +83,13 @@ public class Game {
     }
 
     /**
-     * Runs the game, assumes the game is properly loaded. The player is presented
-     * with options to 'continue' or 'exit' the game at each area, and the input is
-     * handled accordingly. The game continues running until the player chooses to
-     * exit or the current area is null.
+     * Run the game. Assumes game is loaded
      */
     public void runGame() {
         while (currentArea != null) {
             currentArea.enterArea();
-
-            System.out.println("Type 'continue' to proceed or 'exit' to end the game.");
-            String input = readInputWithDefault().trim().toLowerCase();
-
-            if ("exit".equals(input)) {
-                System.out.println("Exiting the game. Thanks for playing!");
-                scanner.close();
-                break; // This will exit the while loop and end the game
-            } else if(!"continue".equals(input)) {
-                System.out.println("Invalid choice! Type 'continue' to proceed or 'exit' to end the game.");
-            }
+            //performAction();
         }
     }
+
 }
