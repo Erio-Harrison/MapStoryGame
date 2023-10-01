@@ -27,6 +27,38 @@ public class Player extends Character {
     }
 
     /**
+     * Prints some information about the current player
+     */
+    public void printPlayerInfo() {
+        String banner = "+"; //+ "-".repeat(30);
+        System.out.println(banner);
+
+        System.out.println("| Player stats:");
+
+        int perc_hp = (this.HP / this.MaxHP) * 100;
+        System.out.println("| HP: " + this.HP + "/" + this.MaxHP + " (" + perc_hp + "%)");
+
+        String items = "| Backpack contains: ";
+        int itemCount = this.backpack.size();
+        int c = 0;
+
+        for (Item item : this.backpack.keySet()) {
+            items += this.backpack.get(item) + " " + item.ID;
+            c++;
+
+            if (c < itemCount - 1) {
+                items += ", ";
+            } else if (c == itemCount - 1) {
+                items += " and ";
+            }
+        }
+
+        System.out.println(items);
+
+        System.out.println(banner);
+    }
+
+    /**
      * Allows the player to inspect the contents of their backpack.
      * The player can interact with the items in the backpack or exit the inspection.
      * The item numbers are displayed starting from 1 for user-friendly interaction.

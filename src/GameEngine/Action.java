@@ -59,39 +59,39 @@ class Choice extends Action {
             }
         }
 
+
+
         do {
+            count = 0;
             for (String s : choice_strings) {
                 count++;
                 System.out.println("[" + count + "] " + s);
             }
+            this.game.player.printPlayerInfo();
 
-            // Adding an option to exit the game
-            System.out.println("[" + (count + 1) + "] Exit Game");
-
-            System.out.print("Select choice (enter a number between 1 and " + (count + 1) + ", or 'b' to inspect backpack): ");
+            System.out.print("Select choice (enter a number between 1 and " + (count) + ", 'b' to open backpack or 'e' to exit game): ");
             String choice = this.game.scanner.nextLine();
 
+            // handle choosing backpack and exiting
             if (choice.equals("b")) {
                 this.game.player.inspectBackpack();
                 continue;
-            }
-
-            // Handling the choice to exit the game
-            if (choice.equals(String.valueOf(count + 1))) {
+            } else if (choice.equals("e")) {
                 System.out.println("Exiting the game. Thanks for playing!");
                 System.exit(0);
             }
 
+            // input validation
             try {
                 int n_choice = Integer.parseInt(choice) - 1;
                 if (n_choice >= 0 && n_choice < count) {
                     this.choices.get(choice_strings.get(n_choice)).doAction();
                     return;
                 } else {
-                    System.out.println("Invalid choice, please enter a number between 1 and " + (count + 1));
+                    System.out.println("Invalid choice, please enter a number between 1 and " + (count));
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input, please enter a valid number, 'b' to inspect backpack, or " + (count + 1) + " to exit game");
+                System.out.println("Invalid input, please enter a valid number, 'b' to inspect backpack, or 'e' to exit game");
             }
         } while (true);
     }
@@ -188,12 +188,13 @@ class Say extends Action {
         this.message = message;
     }
 
+
     /**
      * Executes the action, displaying the specified message to the player.
      */
     @Override
     public void doAction() {
-        System.out.println(message);
+        System.out.println(Utils.surroundWithLines(this.message));
     }
 }
 

@@ -86,9 +86,13 @@ public class Game {
      * Run the game. Assumes game is loaded
      */
     public void runGame() {
+        Area prevArea = null;
         while (currentArea != null) {
+            if (prevArea != currentArea) {
+                System.out.println("You enter the " + currentArea.name);
+            }
+            prevArea = currentArea;
             currentArea.enterArea();
-            //performAction();
         }
     }
 

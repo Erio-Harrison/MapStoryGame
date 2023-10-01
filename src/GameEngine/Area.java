@@ -46,7 +46,6 @@ public class Area {
      * Prints the message that the player has entered this area and then performs the associated action.
      */
     public void enterArea() {
-        System.out.println("You enter the " + this.name);
         this.action.doAction();
     }
     /**

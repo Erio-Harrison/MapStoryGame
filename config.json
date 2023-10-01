@@ -1,6 +1,7 @@
 {
     "player": {
         "starting_health": 100,
+        "max_health": 100,
         "backpack": {
             "bandaid": 1,
             "toothpick": 2
