@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 
-class ChoiceTest {
+class TestChoice {
     private Game game;
     private Area testArea1;
     private Area testArea2;
