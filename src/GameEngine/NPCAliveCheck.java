@@ -23,7 +23,7 @@ public class NPCAliveCheck extends RequirementChecker {
      * @return Returns true if the NPC is alive; otherwise, returns false.
      */
     @Override
-    Boolean checkRequirement() {
+    public Boolean checkRequirement() {
         return this.npc.isAlive;
     }
 }

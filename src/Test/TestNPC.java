@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestNPC {
 
-    public class TestAction extends Action {
+    public static class TestAction extends Action {
         public boolean isActionDone = false;
 
         public TestAction() {

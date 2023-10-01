@@ -11,7 +11,7 @@ import java.util.Map;
  * that affect the game state and progress.
  */
 public class Choice extends Action {
-    Map<String, Action> choices;
+    public Map<String, Action> choices;
     /**
      * Constructs a new Choice action instance associated with the specified game
      * and a set of possible actions represented by a map of strings and corresponding actions.
@@ -86,4 +86,6 @@ public class Choice extends Action {
             }
         } while (true);
     }
+
+
 }

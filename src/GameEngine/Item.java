@@ -32,4 +32,15 @@ public class Item {
         this.description = description;
         this.interact = interaction;
     }
+    public String getId() {
+        return ID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void executeInteract() {
+        if (interact != null) interact.doAction();
+    }
 }
