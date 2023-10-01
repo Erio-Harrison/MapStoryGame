@@ -18,3 +18,4 @@
 1. As a developer, we want to use trunk-based development so that we only need to maintain one branch instead of several feature branches.
 1. As a user, I want to read instructions on installing the game in the GitLab Wiki so that I can easily download and run the game.
 1. As a user, I want to know the license of the game so that I know what I am allowed to do with the game materials.
+1. As a user, I want to have a game engine that allows me to write the game's storyline in a configuration file. This way, I won't need to modify the code every time I want to change the storyline.
