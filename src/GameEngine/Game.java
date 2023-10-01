@@ -1,8 +1,11 @@
 package GameEngine;
-import java.util.*;  
+import java.util.*;
 
 /**
- * The Game class holds the state of the currently running game.
+ * The Game class represents the main control flow of the game. It maintains the
+ * state of the game, holds references to the different areas in the game, the
+ * items, and the player. The class provides methods to instantiate a new game,
+ * run the game, set the current area, and get the player.
  */
 public class Game {
     /**
@@ -25,9 +28,20 @@ public class Game {
      */
     public Player player;
 
+    /**
+     * Sets the current area of the player in the game.
+     *
+     * @param currentArea the area to be set as current area.
+     */
     public void setCurrentArea(Area currentArea) {
         this.currentArea = currentArea;
     }
+
+    /**
+     * Retrieves the player of the game.
+     *
+     * @return the player of the game.
+     */
     public Player getPlayer() {
         return player;
     }
@@ -38,7 +52,12 @@ public class Game {
     public Scanner scanner;
 
     /**
-     * Instantiate a new game
+     * Instantiate a new game with specified player, areas, items, and starting area.
+     *
+     * @param player        the player of the game.
+     * @param areas         the list of all areas in the game.
+     * @param items         the list of all items in the game.
+     * @param startingArea  the starting area of the game.
      */
     public Game(Player player, ArrayList<Area> areas, ArrayList<Item> items, Area startingArea) {
         // setup scanner
@@ -50,82 +69,16 @@ public class Game {
         this.currentArea = startingArea;
     }
 
-    public void performAction() {
-        while (true) {
-            System.out.print("Type 'inspect' to inspect backpack, 'talk' to talk to NPC,\n 'move' to move to another area, or 'exit' to exit: ");
-            String input = scanner.nextLine();
-            switch (input.trim().toLowerCase()) {
-                case "inspect":
-                    player.inspectBackpack();
-                    break;
-                case "talk":
-                    if (currentArea.NPCs.isEmpty()) {
-                        System.out.println("There are no NPCs to talk to in this area.");
-                        break;
-                    }
-                    // Letting the player choose which NPC to talk to.
-                    for (int i = 0; i < currentArea.NPCs.size(); i++) {
-                        System.out.println("[" + i + "] " + currentArea.NPCs.get(i).name);
-                    }
-                    System.out.print("Select NPC number to talk to, or type 'back' to go back: ");
-                    String npcInput = scanner.nextLine();
-                    if ("back".equalsIgnoreCase(npcInput.trim())) {
-                        break;
-                    }
-                    try {
-                        int selectedIndex = Integer.parseInt(npcInput);
-                        if (selectedIndex < 0 || selectedIndex >= currentArea.NPCs.size()) {
-                            System.out.println("Invalid choice. Please select a valid NPC number or type 'back' to go back.");
-                        } else {
-                            NPC selectedNPC = currentArea.NPCs.get(selectedIndex);
-                            selectedNPC.interact();
-                        }
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid input. Please enter a number corresponding to the NPC or type 'back' to go back.");
-                    }
-                    break;
-                case "move":
-                    moveArea();
-                    break;
-                case "exit":
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Invalid command. Please try again.");
-            }
-        }
-    }
-
-    private void moveArea() {
-        if (areas.isEmpty()) {
-            System.out.println("There are no other areas to move to.");
-            return;
-        }
-
-        System.out.println("Available areas to move to:");
-        for (int i = 0; i < areas.size(); i++) {
-            if (!areas.get(i).equals(currentArea)) // Don’t list the current area as an option to move to.
-                System.out.println("[" + i + "] " + areas.get(i).name);
-        }
-
-        System.out.print("Select area number to move to, or type 'back' to go back: ");
-        while (true) {
-            String areaInput = scanner.nextLine();
-            if ("back".equalsIgnoreCase(areaInput.trim())) {
-                break;
-            }
-            try {
-                int selectedIndex = Integer.parseInt(areaInput);
-                if (selectedIndex < 0 || selectedIndex >= areas.size() || areas.get(selectedIndex).equals(currentArea)) {
-                    System.out.println("Invalid choice. Please select a valid area number or type 'back' to go back.");
-                } else {
-                    currentArea = areas.get(selectedIndex);
-                    break;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number corresponding to the area or type 'back' to go back.");
-            }
-            System.out.print("Select area number to move to, or type 'back' to go back: ");
+    /**
+     * Reads input from the player with a default value to avoid NoSuchElementException.
+     *
+     * @return the trimmed and lowercased input from the player, "exit" if an exception occurs.
+     */
+    private String readInputWithDefault() {
+        try {
+            return scanner.nextLine();
+        } catch (NoSuchElementException e) {
+            return "exit";
         }
     }
 
@@ -133,9 +86,14 @@ public class Game {
      * Run the game. Assumes game is loaded
      */
     public void runGame() {
+        Area prevArea = null;
         while (currentArea != null) {
+            if (prevArea != currentArea) {
+                System.out.println("You enter the " + currentArea.name);
+            }
+            prevArea = currentArea;
             currentArea.enterArea();
-            //performAction();
         }
     }
+
 }

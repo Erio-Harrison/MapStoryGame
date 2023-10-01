@@ -1,6 +1,7 @@
 {
     "player": {
         "starting_health": 100,
+        "max_health": 100,
         "backpack": {
             "bandaid": 1,
             "toothpick": 2
@@ -154,7 +155,8 @@
                         "req_satisfied": {
                             "type": "action_list",
                             "actions": [
-                                { "type": "say", "say": "You put the note in the fireplace. It glows brighter for a second but immediately dies down"}
+                                { "type": "say", "say": "You put the note in the fireplace. It glows brighter for a second but immediately dies down"},
+                                { "type": "remove_item_from_backpack", "to_remove": { "starting_note": 1 } }
                             ]
                         }
                     }

@@ -1,8 +1,12 @@
 package GameEngine;
-import java.util.*;  
+import java.util.*;
 
 /**
- * The NPC class represents non-playable characters in the game
+ * Represents a non-playable character (NPC) in the game.
+ * The NPC class extends the Character class and includes functionality
+ * specific to interactions within the game. NPCs have initial interactions,
+ * repeat interactions, and a flag indicating whether the player has spoken
+ * to them.
  */
 public class NPC extends Character {
     /**
@@ -11,22 +15,26 @@ public class NPC extends Character {
     public String name;
 
     /**
-     * NPC initial interaction
+     * The action to be executed during the initial interaction with the NPC.
      */
     public Action initialInteraction;
 
     /**
-     * NPC repeat interaction
+     * The action to be executed during subsequent interactions with the NPC
+     * after the initial interaction has occurred.
      */
     public Action repeatInteraction;
 
     /**
-     * If initial interaction has been completed
+     * A flag indicating whether the player has had the initial interaction
+     * with the NPC.
      */
     public Boolean hasSpokenTo;
 
     /**
-     * Interact with NPC
+     * Allows interaction with the NPC.
+     * The method checks whether the player has spoken to the NPC before and
+     * executes the appropriate interaction action accordingly.
      */
     public void interact() {
         if (hasSpokenTo) {
@@ -36,7 +44,16 @@ public class NPC extends Character {
             hasSpokenTo = true;
         }
     }
-
+    /**
+     * Constructs a new NPC instance with the specified HP, MaxHP, name,
+     * initial interaction, and repeat interaction.
+     *
+     * @param HP the current hit points (health) of the NPC
+     * @param MaxHP the maximum hit points (health) the NPC can have
+     * @param name the name of the NPC
+     * @param initialInteraction the action for the initial interaction with the NPC
+     * @param repeatInteraction the action for subsequent interactions with the NPC
+     */
     public NPC(int HP, int MaxHP, String name, Action initialInteraction, Action repeatInteraction) {
         super(HP, MaxHP);
         this.hasSpokenTo = false;

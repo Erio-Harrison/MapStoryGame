@@ -1,18 +1,68 @@
 package GameEngine;
-import java.util.*;  
+import java.util.*;
 
 /**
- * Represents the player of the game
+ * Represents a player in the game.
+ * The Player class extends the Character class and includes functionality
+ * specific to player interaction within the game, such as inspecting the backpack
+ * and interacting with Non-Player Characters (NPCs).
  */
 public class Player extends Character {
+    /**
+     * A map representing the player's backpack, where the keys are items
+     * and the values are the quantity of each item.
+     */
     public Map<Item, Integer> backpack;
 
-
+    /**
+     * Constructs a new Player instance with the specified HP, MaxHP, and backpack.
+     *
+     * @param HP the current hit points (health) of the player
+     * @param MaxHP the maximum hit points (health) the player can have
+     * @param backpack a map representing the initial items in the player's backpack
+     */
     public Player(int HP, int MaxHP, Map<Item, Integer> backpack) {
         super(HP, MaxHP);
         this.backpack = backpack;
     }
 
+    /**
+     * Prints some information about the current player
+     */
+    public void printPlayerInfo() {
+        String banner = "+"; //+ "-".repeat(30);
+        System.out.println(banner);
+
+        System.out.println("| Player stats:");
+
+        int perc_hp = (this.HP / this.MaxHP) * 100;
+        System.out.println("| HP: " + this.HP + "/" + this.MaxHP + " (" + perc_hp + "%)");
+
+        String items = "| Backpack contains: ";
+        int itemCount = this.backpack.size();
+        int c = 0;
+
+        for (Item item : this.backpack.keySet()) {
+            items += this.backpack.get(item) + " " + item.ID;
+            c++;
+
+            if (c < itemCount - 1) {
+                items += ", ";
+            } else if (c == itemCount - 1) {
+                items += " and ";
+            }
+        }
+
+        System.out.println(items);
+
+        System.out.println(banner);
+    }
+
+    /**
+     * Allows the player to inspect the contents of their backpack.
+     * The player can interact with the items in the backpack or exit the inspection.
+     * The item numbers are displayed starting from 1 for user-friendly interaction.
+     */
     public void inspectBackpack() {
         if (backpack.isEmpty()) {
             System.out.println("Your backpack is empty.");
@@ -24,7 +74,7 @@ public class Player extends Character {
         Item[] itemList = items.toArray(new Item[0]);
         for (int i = 0; i < itemList.length; i++) {
             Item item = itemList[i];
-            System.out.println("[" + i + "] " + item.ID + " (" + item.description + ") x" + backpack.get(item));
+            System.out.println("[" + (i + 1) + "] " + item.ID + " (" + item.description + ") x" + backpack.get(item)); // Changed i to i + 1
         }
 
         Scanner scanner = new Scanner(System.in);
@@ -35,7 +85,7 @@ public class Player extends Character {
                 break;
             }
             try {
-                int selectedIndex = Integer.parseInt(input);
+                int selectedIndex = Integer.parseInt(input) - 1; // Adjust selectedIndex to match the array index
                 if (selectedIndex < 0 || selectedIndex >= itemList.length) {
                     System.out.println("Invalid choice. Please select a valid item number or type 'exit' to exit.");
                 } else {
@@ -54,6 +104,13 @@ public class Player extends Character {
             }
         }
     }
+
+    /**
+     * Allows the player to interact with a given NPC.
+     * The interaction is defined by the NPC's interact method.
+     *
+     * @param npc the NPC with whom the player is to interact
+     */
     public void interactWithNPC(NPC npc) {
         npc.interact();
     }

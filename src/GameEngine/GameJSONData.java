@@ -243,6 +243,7 @@ public class GameJSONData {
         public GameEngine.Action generateAction(GameEngine.Game G, Game jsonGame) {
             return new GameEngine.Hurt(G, this.hurt);
         }
+
     }
     /**
      * Represents a heal action in the game, which can be used to restore health to the player.

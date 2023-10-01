@@ -3,10 +3,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestGame {
 
@@ -57,4 +61,5 @@ public class TestGame {
         game.setCurrentArea(testArea2);
         Assertions.assertEquals(testArea2, game.currentArea, "Current area should be set correctly");
     }
+
 }

@@ -87,28 +87,4 @@ public class TestArea {
         GameEngine.Area area = new GameEngine.Area("Test Area", new ArrayList<>(), new HashMap<>(), dummyAction);
         Assertions.assertEquals("Test Area", area.name, "Area name should be initialized correctly");
     }
-
-    @Test
-    public void testEnterAreaMessage() {
-        GameEngine.Action dummyAction = new GameEngine.Action(null) {
-            @Override
-            public void doAction() {
-                // Dummy action
-            }
-        };
-        GameEngine.Area area = new GameEngine.Area("Test Area", new ArrayList<>(), new HashMap<>(), dummyAction);
-
-        // Capture the standard output
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        // Call the method
-        area.enterArea();
-
-        // Reset the standard output
-        System.setOut(System.out);
-
-        String expectedMessage = "You enter the " + area.name;
-        Assertions.assertEquals(expectedMessage.trim(), outContent.toString().trim(), "Enter area message should be correct");
-    }
 }
