@@ -155,7 +155,8 @@
                         "req_satisfied": {
                             "type": "action_list",
                             "actions": [
-                                { "type": "say", "say": "You put the note in the fireplace. It glows brighter for a second but immediately dies down"}
+                                { "type": "say", "say": "You put the note in the fireplace. It glows brighter for a second but immediately dies down"},
+                                { "type": "remove_item_from_backpack", "to_remove": { "starting_note": 1 } }
                             ]
                         }
                     }
